@@ -51,11 +51,14 @@ export async function getConversation(conversationId?: string): Promise<Conversa
   };
 }
 
-export async function sendMessage(input: { conversationId: string; text: string }) {
+export async function sendMessage(input: { conversationId: string; text: string; imageUrl?: string | null }) {
   const userId = await getCurrentUserId();
   const text = input.text.trim();
 
-  if (!text || text.length > 2000) throw new Error("MESSAGE_INVALID");
+  if ((!text && !input.imageUrl) || text.length > 2000) throw new Error("MESSAGE_INVALID");
+  if (input.imageUrl && (!input.imageUrl.startsWith("data:image/") || input.imageUrl.length > 3_000_000)) {
+    throw new Error("IMAGE_INVALID");
+  }
 
   const conversation = await db.conversation.findFirst({
     where: {
@@ -68,7 +71,7 @@ export async function sendMessage(input: { conversationId: string; text: string 
   if (!conversation) throw new Error("CONVERSATION_NOT_FOUND");
 
   const message = await db.message.create({
-    data: { conversationId: conversation.id, senderId: userId, text },
+    data: { conversationId: conversation.id, senderId: userId, text, imageUrl: input.imageUrl ?? null },
   });
 
   revalidatePath("/");
