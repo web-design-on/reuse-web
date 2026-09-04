@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import { cookies } from "next/headers";
+import Navbar from "./navbar";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -13,10 +15,12 @@ export const metadata: Metadata = {
   description: "Converse sobre itens reutilizados.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const isLoggedIn = Boolean((await cookies()).get("reuse_user_id")?.value);
+
   return (
     <html lang="pt-BR" className={poppins.variable}>
-      <body>{children}</body>
+      <body><Navbar isLoggedIn={isLoggedIn} />{children}</body>
     </html>
   );
 }
