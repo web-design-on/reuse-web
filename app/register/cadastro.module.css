@@ -1,0 +1,117 @@
+.container {
+    position: relative;
+    min-height: 100vh;
+    background: #fff;
+    overflow: hidden;
+}
+
+.bubble01 {
+    position: absolute;
+    top: 0;
+    left: -20px;
+    width: 60vw;
+    max-width: 340px;
+    z-index: 3;
+}
+
+.bubble02 {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 55vw;
+    max-width: 310px;
+    z-index: 2;
+}
+
+.bubble03 {
+    position: absolute;
+    top: 200px;
+    right: -15px;
+    width: 20vw;
+    max-width: 110px;
+    z-index: 3;
+}
+
+.bubble04 {
+    position: absolute;
+    top: -50px;
+    left: 200px;
+    width: 55vw;
+    max-width: 310px;
+    z-index: 0;
+}
+
+.content {
+    position: relative;
+    z-index: 4;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 0 28px;
+    padding-top: 24vh;
+}
+
+.headerSection {
+    margin-bottom: 32px;
+}
+
+.title {
+    font-size: 42px;
+    font-weight: 700;
+    color: #111;
+    letter-spacing: -0.5px;
+    margin: 0 0 6px 0;
+}
+
+.subtitle {
+    font-size: 15px;
+    color: #555;
+    font-weight: 400;
+    margin: 0;
+}
+
+.heart {
+    color: #111;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.input {
+    background: #F8F8F8;
+    border: none;
+    border-radius: 14px;
+    height: 54px;
+    padding: 0 18px;
+    font-size: 15px;
+    color: #222;
+}
+
+.btnEntrar {
+    background: #4F40E2;
+    border: none;
+    border-radius: 14px;
+    height: 54px;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.btnEntrar:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.btnCancelar {
+    background: transparent;
+    border: none;
+    padding: 10px 0;
+    color: #555;
+    font-size: 15px;
+    cursor: pointer;
+}
