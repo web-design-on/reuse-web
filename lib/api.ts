@@ -17,6 +17,12 @@ function saveStoredUsers(users: StoredUser[]) {
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
 
+function withoutPassword(user: StoredUser): Omit<StoredUser, 'senha'> {
+    const { senha, ...userWithoutPassword } = user;
+    void senha;
+    return userWithoutPassword;
+}
+
 export async function registerUser(firstName: string, userName: string, senha: string) {
     const users = getStoredUsers();
 
@@ -29,8 +35,7 @@ export async function registerUser(firstName: string, userName: string, senha: s
     users.push(newUser);
     saveStoredUsers(users);
 
-    const { senha: _senha, ...userWithoutPassword } = newUser;
-    return userWithoutPassword;
+    return withoutPassword(newUser);
 }
 
 export async function authenticateUser(userName: string, senha: string) {
@@ -42,6 +47,5 @@ export async function authenticateUser(userName: string, senha: string) {
         throw new Error('Usuário ou senha inválidos.');
     }
 
-    const { senha: _senha, ...userWithoutPassword } = found;
-    return userWithoutPassword;
+    return withoutPassword(found);
 }

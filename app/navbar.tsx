@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FaComments, FaHeart, FaHome, FaShoppingCart, FaThLarge, FaUser } from "react-icons/fa";
 
 const links = [
@@ -16,8 +17,22 @@ const links = [
 
 export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
   const pathname = usePathname();
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn);
 
-  const accountLink = { href: isLoggedIn ? "/profile" : "/login", label: isLoggedIn ? "Perfil" : "Login", icon: FaUser };
+  useEffect(() => {
+    const syncSession = () => setLoggedIn(Boolean(localStorage.getItem("@reuse_user")));
+    const timer = window.setTimeout(syncSession, 0);
+    window.addEventListener("reuse-session-changed", syncSession);
+    window.addEventListener("storage", syncSession);
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("reuse-session-changed", syncSession);
+      window.removeEventListener("storage", syncSession);
+    };
+  }, []);
+
+  const accountLink = { href: loggedIn ? "/profile" : "/login", label: loggedIn ? "Perfil" : "Login", icon: FaUser };
   const navigationLinks = [
     links[0],
     links[1],

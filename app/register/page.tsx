@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { registerUser } from '@/lib/api';
@@ -44,10 +45,10 @@ export default function CadastroPage() {
 
     return (
         <div className={styles.container}>
-            <img src="/images/bubble04.png" className={styles.bubble04} alt="" />
-            <img src="/images/bubble02.png" className={styles.bubble02} alt="" />
-            <img src="/images/bubble01.png" className={styles.bubble01} alt="" />
-            <img src="/images/bubble03.png" className={styles.bubble03} alt="" />
+            <Image src="/images/bubble04.png" className={styles.bubble04} alt="" width={310} height={310} />
+            <Image src="/images/bubble02.png" className={styles.bubble02} alt="" width={310} height={310} />
+            <Image src="/images/bubble01.png" className={styles.bubble01} alt="" width={340} height={340} />
+            <Image src="/images/bubble03.png" className={styles.bubble03} alt="" width={110} height={110} />
 
             <div className={styles.content}>
                 <div className={styles.headerSection}>
