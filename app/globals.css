@@ -3,7 +3,7 @@
 .person-avatar { display: block; width: 44px; height: 44px; flex: 0 0 auto; object-fit: cover; border-radius: 50%; }.chat-avatar { width: 48px; height: 48px; }
 @import "tailwindcss";
 
-:root { --purple: #6b4eff; --ink: #24202f; --muted: #817c8e; --paper: #f5f5f5; --line: #e9e7ee; }
+:root { --purple: #6b4eff; --ink: #24202f; --muted: #817c8e; --paper: #f5f5f5; --line: #e9e7ee; --tint-soft: rgba(107, 78, 255, .12); --price-green: #2ecc71; --danger: #ff4d4d; }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-poppins), sans-serif; }
 button, input { font: inherit; }
