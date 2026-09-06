@@ -1,20 +1,11 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { getProducts } from '@/app/actions/products';
 
-async function fetchProducts() {
-    const response = await fetch('/api/products');
-
-    if (!response.ok) {
-        throw new Error('Erro ao buscar produtos.');
-    }
-
-    return response.json();
-}
-
-export function useProducts() {
+export function useProducts(category?: string) {
     return useQuery({
-        queryKey: ['products'],
-        queryFn: fetchProducts,
+        queryKey: ['products', category ?? 'all'],
+        queryFn: () => getProducts(category),
     });
 }
