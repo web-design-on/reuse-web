@@ -1,0 +1,256 @@
+.shell {
+    min-height: calc(100vh - 70px);
+    background: var(--paper);
+}
+
+.status {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 20px;
+    color: var(--purple);
+    background: none;
+    border: 0;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.carousel {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    max-height: 360px;
+    margin: 0 auto;
+    background: var(--line);
+    border-radius: 16px;
+    aspect-ratio: 1;
+    overflow: hidden;
+}
+
+.carouselTrack {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.carouselTrack::-webkit-scrollbar {
+    display: none;
+}
+
+.carouselImage {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    scroll-snap-align: start;
+}
+
+.dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background: rgb(255 255 255 / 50%);
+    border-radius: 4px;
+}
+
+.dotActive {
+    width: 20px;
+    background: #fff;
+}
+
+.content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 24px;
+}
+
+.headerRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.ratingRow {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.infoBtn {
+    display: flex;
+    padding: 10px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 0;
+    border-radius: 12px;
+}
+
+.priceRow {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.price {
+    color: var(--price-green);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.stock {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.badge {
+    padding: 8px 16px;
+    background: var(--paper);
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.badgeAvailable {
+    color: #137333;
+    background: #e6f4ea;
+}
+
+.divider {
+    height: 1px;
+    margin: 20px 0;
+    background: var(--line);
+}
+
+.sectionTitle {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.description {
+    margin: 0 0 15px;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 22px;
+    opacity: .8;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0 30px;
+}
+
+.favBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background: none;
+    border: 1px solid var(--purple);
+    border-radius: 12px;
+}
+
+.favBtnActive {
+    border-color: var(--danger);
+}
+
+.cartBtn {
+    flex: 1;
+    padding: 14px;
+    color: #fff;
+    background: var(--purple);
+    border: 0;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.cartBtnActive {
+    background: #444;
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgb(0 0 0 / 40%);
+}
+
+.sheet {
+    width: 100%;
+    max-width: 480px;
+    max-height: 85vh;
+    padding: 28px;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 20px;
+}
+
+.specsGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.spec {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 120px;
+    padding: 10px;
+    background: #f4f3ff;
+    border-radius: 10px;
+}
+
+.specLabel {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.specValue {
+    font-size: 14px;
+    font-weight: 600;
+}
