@@ -2,10 +2,11 @@
 
 import { useState, type UIEvent } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { FaArrowLeft, FaHeart, FaInfoCircle, FaRegHeart, FaStar } from 'react-icons/fa';
+import { FaArrowLeft, FaHeart, FaInfoCircle, FaRegHeart, FaShoppingCart, FaStar } from 'react-icons/fa';
 import { useProduct } from '@/hooks/use-Product';
 import { useFavorites } from '@/hooks/use-Favorites';
 import { useCart } from '@/hooks/use-Cart';
+import { PRODUCT_CATEGORY_LABELS, PRODUCT_SELLERS } from '@/lib/types';
 import styles from './details.module.css';
 
 export default function ProductDetailsPage() {
@@ -39,6 +40,8 @@ export default function ProductDetailsPage() {
   const images = product.images?.length ? product.images : product.thumbnail ? [product.thumbnail] : [];
   const favorite = isFavorite(product.id);
   const inCart = isInCart(product.id);
+  const seller = PRODUCT_SELLERS[product.id % PRODUCT_SELLERS.length];
+  const categoryLabel = PRODUCT_CATEGORY_LABELS[product.category] ?? product.category.replace(/-/g, ' ');
   const dimensionText = product.dimensions
     ? `${Math.round(product.dimensions.width)} x ${Math.round(product.dimensions.height)} x ${Math.round(product.dimensions.depth)}`
     : 'Dimensões indisponíveis';
@@ -51,81 +54,95 @@ export default function ProductDetailsPage() {
 
   return (
     <main className={styles.shell}>
-      <button type="button" className={styles.backLink} onClick={() => router.back()}>
-        <FaArrowLeft /> Voltar
-      </button>
-
-      <div className={styles.carousel}>
-        <div className={styles.carouselTrack} onScroll={handleScroll}>
-          {images.map((img, index) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={index} src={img} alt={`${product.title} ${index + 1}`} className={styles.carouselImage} />
-          ))}
+      <div className={styles.page}>
+        <div className={styles.breadcrumb}>
+          <button type="button" onClick={() => router.back()}>Catálogo</button>
+          <span>/</span>
+          <span>{categoryLabel}</span>
+          <strong>{product.title}</strong>
         </div>
 
-        {images.length > 1 && (
-          <div className={styles.dots}>
-            {images.map((_, index) => (
-              <span key={index} className={`${styles.dot} ${index === activeIndex ? styles.dotActive : ''}`} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className={styles.content}>
-        <div className={styles.headerRow}>
-          <div>
-            <h1 className={styles.title}>{product.title}</h1>
-            <div className={styles.ratingRow}>
-              <FaStar size={14} color="#f1c40f" />
-              <span>
-                {product.rating ?? 'N/A'} • {product.brand ?? 'Marca não informada'}
-              </span>
+        <div className={styles.detailGrid}>
+          <section className={styles.gallery}>
+            <div className={styles.imageFrame}>
+              <div className={styles.carouselTrack} onScroll={handleScroll}>
+                {images.map((img, index) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img key={index} src={img} alt={`${product.title} ${index + 1}`} className={styles.carouselImage} />
+                ))}
+              </div>
+              <button
+                type="button"
+                className={`${styles.imageFavorite} ${favorite ? styles.imageFavoriteActive : ''}`}
+                onClick={() => toggleFavorite(product)}
+                aria-label={favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+                aria-pressed={favorite}
+              >
+                {favorite ? <FaHeart /> : <FaRegHeart />}
+              </button>
             </div>
-          </div>
-          <button type="button" className={styles.infoBtn} onClick={() => setSpecsOpen(true)} aria-label="Ver especificações">
-            <FaInfoCircle size={20} />
-          </button>
-        </div>
 
-        <div className={styles.priceRow}>
-          <span className={styles.price}>R$ {product.price.toFixed(2)}</span>
-          <span className={styles.stock}>({product.stock ?? 0} em estoque)</span>
-        </div>
+            {images.length > 1 && (
+              <div className={styles.thumbnails}>
+                {images.map((img, index) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img key={index} src={img} alt="" className={`${styles.thumbnail} ${index === activeIndex ? styles.thumbnailActive : ''}`} />
+                ))}
+              </div>
+            )}
+          </section>
 
-        <div className={styles.badges}>
-          <span className={`${styles.badge} ${styles.badgeAvailable}`}>
-            {product.availabilityStatus ?? 'Estoque não informado'}
-          </span>
-          {(product.tags ?? []).filter(Boolean).map((tag) => (
-            <span key={tag} className={styles.badge}>
-              {tag}
-            </span>
-          ))}
-        </div>
+          <section className={styles.content}>
+            <div className={styles.categoryRow}>
+              <span>{categoryLabel}</span>
+              {product.availabilityStatus && <strong>{product.availabilityStatus}</strong>}
+            </div>
+            <h1 className={styles.title}>{product.title}</h1>
+            <div className={styles.priceRow}>
+              <span className={styles.price}>R$ {product.price.toFixed(2)}</span>
+              {product.stock !== undefined && <span className={styles.stock}>{product.stock} em estoque</span>}
+            </div>
 
-        <div className={styles.divider} />
+            <div className={styles.infoCard}>
+              <h2 className={styles.sectionTitle}>Descrição</h2>
+              <p className={styles.description}>{product.description}</p>
+              {(product.tags ?? []).filter(Boolean).length > 0 && (
+                <div className={styles.tags}>
+                  {(product.tags ?? []).filter(Boolean).map((tag) => <span key={tag}>#{tag}</span>)}
+                </div>
+              )}
+            </div>
 
-        <h2 className={styles.sectionTitle}>Descrição</h2>
-        <p className={styles.description}>{product.description}</p>
+            <div className={styles.infoCard}>
+              <div className={styles.cardHeading}>
+                <h2 className={styles.sectionTitle}>Vendedor</h2>
+                <button type="button" className={styles.infoBtn} onClick={() => setSpecsOpen(true)} aria-label="Ver especificações">
+                  <FaInfoCircle />
+                </button>
+              </div>
+              <div className={styles.sellerRow}>
+                <img src={seller.avatar} alt={seller.name} className={styles.sellerAvatar} />
+                <div>
+                  <strong>{seller.name}</strong>
+                  <span><FaStar /> {product.rating ?? 'N/A'} · {product.brand ?? 'Marca não informada'}</span>
+                </div>
+              </div>
+            </div>
 
-        <div className={styles.actions}>
-          <button
-            type="button"
-            className={`${styles.favBtn} ${favorite ? styles.favBtnActive : ''}`}
-            onClick={() => toggleFavorite(product)}
-            aria-label={favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-            aria-pressed={favorite}
-          >
-            {favorite ? <FaHeart size={22} color="#ff4d4d" /> : <FaRegHeart size={22} />}
-          </button>
-          <button
-            type="button"
-            className={`${styles.cartBtn} ${inCart ? styles.cartBtnActive : ''}`}
-            onClick={() => toggleCartItem(product)}
-          >
-            {inCart ? 'Remover do Carrinho' : 'Adicionar ao Carrinho'}
-          </button>
+            <div className={styles.specsPreview}>
+              <div><span>Marca</span><strong>{product.brand ?? 'Não informada'}</strong></div>
+              <div><span>Disponibilidade</span><strong>{product.availabilityStatus ?? 'Não informada'}</strong></div>
+            </div>
+
+            <div className={styles.actions}>
+              <button type="button" className={`${styles.cartBtn} ${inCart ? styles.cartBtnActive : ''}`} onClick={() => toggleCartItem(product)}>
+                <FaShoppingCart /> {inCart ? 'Remover do carrinho' : 'Adicionar ao carrinho'}
+              </button>
+              <button type="button" className={styles.favBtn} onClick={() => toggleFavorite(product)}>
+                {favorite ? <FaHeart /> : <FaRegHeart />} {favorite ? 'Remover dos favoritos' : 'Salvar nos favoritos'}
+              </button>
+            </div>
+          </section>
         </div>
       </div>
 
