@@ -1,40 +1,47 @@
 "use server";
 
-import { PRODUCT_CATEGORY_LABELS, type Category, type Product } from "@/lib/types";
+import { db } from "@/lib/db";
+import type { Category, Product, ProductDimensions } from "@/lib/types";
 
-function normalizeCategoryName(value: string): string {
-  const normalized = value.trim();
-  return PRODUCT_CATEGORY_LABELS[normalized] ?? normalized
-    .split("-")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
+function toProduct(product: {
+  id: number;
+  title: string;
+  description: string | null;
+  category: string;
+  price: number;
+  rating: number | null;
+  stock: number | null;
+  brand: string | null;
+  tags: string[];
+  availabilityStatus: string | null;
+  warrantyInformation: string | null;
+  shippingInformation: string | null;
+  dimensions: unknown;
+  images: string[];
+  thumbnail: string | null;
+}): Product {
+  return {
+    ...product,
+    dimensions: product.dimensions as ProductDimensions | null,
+  };
 }
 
-// Remover quando produtos/categorias forem implementados pelo backend (banco de dados).
-
 export async function getProducts(category?: string): Promise<Product[]> {
-  const url = category
-    ? `https://dummyjson.com/products/category/${encodeURIComponent(category)}?limit=100`
-    : "https://dummyjson.com/products?limit=100";
+  const products = await db.product.findMany({
+    where: category ? { category } : undefined,
+    orderBy: { id: "asc" },
+  });
 
-  const response = await fetch(url);
-  if (!response.ok) throw new Error("Erro ao buscar produtos.");
-
-  const data: { products: Product[] } = await response.json();
-  return data.products;
+  return products.map(toProduct);
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const response = await fetch("https://dummyjson.com/products/categories");
-  if (!response.ok) throw new Error("Erro ao buscar categorias.");
-
-  const data: { slug: string; name: string }[] = await response.json();
-  return data.map(({ slug, name }) => ({ slug, name: normalizeCategoryName(name || slug) }));
+  return db.category.findMany({ orderBy: { name: "asc" } });
 }
 
 export async function getProduct(id: string): Promise<Product> {
-  const response = await fetch(`https://dummyjson.com/products/${encodeURIComponent(id)}`);
-  if (!response.ok) throw new Error("Produto não encontrado.");
+  const product = await db.product.findUnique({ where: { id: Number(id) } });
+  if (!product) throw new Error("Produto não encontrado.");
 
-  return response.json();
+  return toProduct(product);
 }
