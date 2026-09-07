@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { FaHandshake, FaLeaf, FaPiggyBank } from 'react-icons/fa';
 import { useAuth } from '@/contexts/AuthContext';
 import { registerUser } from '@/lib/api';
 import styles from './cadastro.module.css';
@@ -44,39 +45,24 @@ export default function CadastroPage() {
 
     return (
         <main className={styles.page}>
-            <section className={styles.panel}>
-                <aside className={styles.brandColumn}>
-                    <div className={styles.brandHeader}>
-                        <span className={styles.brandMark}>R</span>
-                        <span className={styles.brandText}>ReUse</span>
+            <section className={styles.brandPanel}>
+                <div className={styles.brandContent}>
+                    <h1>Por que entrar<br />para o <span>ReUse?</span></h1>
+                    <p>Comprar de segunda mão é o ato de consumo mais sustentável que existe. E aqui é fácil, seguro e divertido.</p>
+
+                    <div className={styles.benefits}>
+                        <div className={styles.benefit}><FaLeaf /><span><strong>Impacto real</strong><small>Cada compra economiza CO₂</small></span></div>
+                        <div className={styles.benefit}><FaPiggyBank /><span><strong>Economize</strong><small>Itens até 70% mais baratos</small></span></div>
+                        <div className={styles.benefit}><FaHandshake /><span><strong>Comunidade</strong><small>+120k pessoas conscientes</small></span></div>
                     </div>
+                </div>
+            </section>
 
-                    <div className={styles.contentBlock}>
-                        <span className={styles.eyebrow}>Compre melhor</span>
-                        <h1>Encontre peças que fazem sentido para você.</h1>
-                        <p>
-                            Uma plataforma para descobrir itens de qualidade, valor real e histórias que continuam valendo a pena.
-                        </p>
-                    </div>
-
-                    <div className={styles.visual} aria-hidden="true">
-                        <div className={styles.visualCardLarge} />
-                        <div className={styles.visualCardSmall} />
-                        <div className={styles.visualBadge}>+1,2 mil usuários</div>
-                    </div>
-
-                    <ul className={styles.featureList}>
-                        <li>Itens verificados</li>
-                        <li>Ofertas mais inteligentes</li>
-                        <li>Conexão com compradores reais</li>
-                    </ul>
-                </aside>
-
-                <div className={styles.formColumn}>
+            <section className={styles.formPanel}>
+                <div className={styles.formContent}>
                     <div className={styles.headerSection}>
-                        <span className={styles.eyebrow}>Cadastro</span>
                         <h2 className={styles.title}>Crie sua conta</h2>
-                        <p className={styles.subtitle}>Vamos começar sua jornada ReUse.</p>
+                        <p className={styles.subtitle}>Já tem uma conta? <button type="button" onClick={handleCancelar}>Faça login</button></p>
                     </div>
 
                     <div className={styles.form}>
@@ -103,34 +89,37 @@ export default function CadastroPage() {
                             />
                         </label>
 
-                        <label className={styles.field}>
-                            <span>Senha</span>
-                            <input
-                                className={styles.input}
-                                type="password"
-                                placeholder="••••••••"
-                                value={senha}
-                                onChange={(e) => setSenha(e.target.value)}
-                            />
-                        </label>
+                        <div className={styles.passwordFields}>
+                            <label className={styles.field}>
+                                <span>Senha</span>
+                                <input
+                                    className={styles.input}
+                                    type="password"
+                                    placeholder="••••••••"
+                                    value={senha}
+                                    onChange={(e) => setSenha(e.target.value)}
+                                />
+                            </label>
 
-                        <label className={styles.field}>
-                            <span>Confirmar senha</span>
-                            <input
-                                className={styles.input}
-                                type="password"
-                                placeholder="Repita sua senha"
-                                value={confirmarSenha}
-                                onChange={(e) => setConfirmarSenha(e.target.value)}
-                            />
+                            <label className={styles.field}>
+                                <span>Confirmar senha</span>
+                                <input
+                                    className={styles.input}
+                                    type="password"
+                                    placeholder="Repita sua senha"
+                                    value={confirmarSenha}
+                                    onChange={(e) => setConfirmarSenha(e.target.value)}
+                                />
+                            </label>
+                        </div>
+
+                        <label className={styles.terms}>
+                            <input type="checkbox" />
+                            <span>Li e aceito os <a href="#termos">Termos de Uso</a> e a <a href="#privacidade">Política de Privacidade</a></span>
                         </label>
 
                         <button className={styles.btnEntrar} onClick={handleCadastrar} disabled={loading}>
-                            {loading ? 'Cadastrando...' : 'Cadastrar'}
-                        </button>
-
-                        <button className={styles.btnCancelar} onClick={handleCancelar}>
-                            Já tenho conta
+                            {loading ? 'Cadastrando...' : 'Criar conta grátis'}
                         </button>
                     </div>
                 </div>
