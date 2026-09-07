@@ -1,20 +1,40 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FaHeart, FaRegHeart, FaShoppingCart } from 'react-icons/fa';
 import { useFavorites } from '@/hooks/use-Favorites';
 import { useCart } from '@/hooks/use-Cart';
+import { useAuth } from '@/contexts/AuthContext';
 import { PRODUCT_CATEGORY_LABELS, PRODUCT_SELLERS, type Product } from '@/lib/types';
 import styles from './ProductCard.module.css';
 
 export default function ProductCard({ product }: { product: Product }) {
     const { isFavorite, toggleFavorite } = useFavorites();
     const { isInCart, toggleCartItem } = useCart();
+    const { user } = useAuth();
+    const router = useRouter();
     const image = product.images?.[0] ?? product.thumbnail;
     const favorite = isFavorite(product.id);
     const inCart = isInCart(product.id);
     const seller = PRODUCT_SELLERS[product.id % PRODUCT_SELLERS.length];
     const categoryLabel = PRODUCT_CATEGORY_LABELS[product.category] ?? product.category?.replace(/-/g, ' ') ?? 'Produto';
+
+    function handleToggleFavorite() {
+        if (!user) {
+            router.push('/login');
+            return;
+        }
+        toggleFavorite(product);
+    }
+
+    function handleToggleCart() {
+        if (!user) {
+            router.push('/login');
+            return;
+        }
+        toggleCartItem(product);
+    }
 
     return (
         <div className={styles.card}>
@@ -31,7 +51,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 <button
                     type="button"
                     className={`${styles.favBtn} ${favorite ? styles.favBtnActive : ''}`}
-                    onClick={() => toggleFavorite(product)}
+                    onClick={handleToggleFavorite}
                     aria-label={favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
                     aria-pressed={favorite}
                 >
@@ -53,7 +73,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 <button
                     type="button"
                     className={`${styles.cartBtn} ${inCart ? styles.cartBtnActive : ''}`}
-                    onClick={() => toggleCartItem(product)}
+                    onClick={handleToggleCart}
                     aria-label={inCart ? 'Remover do carrinho' : 'Adicionar ao carrinho'}
                     aria-pressed={inCart}
                 >

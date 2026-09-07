@@ -6,6 +6,7 @@ import { FaArrowLeft, FaHeart, FaInfoCircle, FaRegHeart, FaShoppingCart, FaStar 
 import { useProduct } from '@/hooks/use-Product';
 import { useFavorites } from '@/hooks/use-Favorites';
 import { useCart } from '@/hooks/use-Cart';
+import { useAuth } from '@/contexts/AuthContext';
 import { PRODUCT_CATEGORY_LABELS, PRODUCT_SELLERS } from '@/lib/types';
 import styles from './details.module.css';
 
@@ -15,6 +16,7 @@ export default function ProductDetailsPage() {
   const { data: product, isLoading, error } = useProduct(id);
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isInCart, toggleCartItem } = useCart();
+  const { user } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
   const [specsOpen, setSpecsOpen] = useState(false);
 
@@ -52,6 +54,24 @@ export default function ProductDetailsPage() {
     if (index !== activeIndex) setActiveIndex(index);
   }
 
+  const currentProduct = product;
+
+  function handleToggleFavorite() {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    toggleFavorite(currentProduct);
+  }
+
+  function handleToggleCart() {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    toggleCartItem(currentProduct);
+  }
+
   return (
     <main className={styles.shell}>
       <div className={styles.page}>
@@ -74,7 +94,7 @@ export default function ProductDetailsPage() {
               <button
                 type="button"
                 className={`${styles.imageFavorite} ${favorite ? styles.imageFavoriteActive : ''}`}
-                onClick={() => toggleFavorite(product)}
+                onClick={handleToggleFavorite}
                 aria-label={favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
                 aria-pressed={favorite}
               >
@@ -135,10 +155,10 @@ export default function ProductDetailsPage() {
             </div>
 
             <div className={styles.actions}>
-              <button type="button" className={`${styles.cartBtn} ${inCart ? styles.cartBtnActive : ''}`} onClick={() => toggleCartItem(product)}>
+              <button type="button" className={`${styles.cartBtn} ${inCart ? styles.cartBtnActive : ''}`} onClick={handleToggleCart}>
                 <FaShoppingCart /> {inCart ? 'Remover do carrinho' : 'Adicionar ao carrinho'}
               </button>
-              <button type="button" className={styles.favBtn} onClick={() => toggleFavorite(product)}>
+              <button type="button" className={styles.favBtn} onClick={handleToggleFavorite}>
                 {favorite ? <FaHeart /> : <FaRegHeart />} {favorite ? 'Remover dos favoritos' : 'Salvar nos favoritos'}
               </button>
             </div>
