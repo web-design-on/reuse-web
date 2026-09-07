@@ -3,19 +3,21 @@
 .person-avatar { display: block; width: 44px; height: 44px; flex: 0 0 auto; object-fit: cover; border-radius: 50%; }.chat-avatar { width: 48px; height: 48px; }
 @import "tailwindcss";
 
-:root { --purple: #6b4eff; --ink: #24202f; --muted: #817c8e; --paper: #f5f5f5; --line: #e9e7ee; --tint-soft: rgba(107, 78, 255, .12); --price-green: #2ecc71; --danger: #ff4d4d; }
+:root { --purple: #6b4eff; --ink: #24202f; --muted: #817c8e; --paper: linear-gradient(135deg, #fcfbff 0%, #f5f1ff 52%, #faf8ff 100%); --line: #e9e7ee; --tint-soft: rgba(107, 78, 255, .12); --price-green: #2ecc71; --danger: #ff4d4d; }
 * { box-sizing: border-box; }
+html, body { min-height: 100%; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-poppins), sans-serif; }
 button, input { font: inherit; }
 button { cursor: pointer; }
+.site-navbar { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); }
 .site-navbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; min-height: 70px; padding: 0 34px; background: #fff; border-bottom: 1px solid var(--line); }
 .site-logo { display: flex; align-items: center; text-decoration: none; }.site-logo img { width: 106px; height: 42px; object-fit: contain; }
 .site-nav-links { display: flex; align-items: stretch; align-self: stretch; gap: 6px; }
 .site-nav-links a { display: flex; align-items: center; gap: 8px; padding: 0 14px; color: var(--muted); font-size: 13px; font-weight: 500; text-decoration: none; border-bottom: 3px solid transparent; }
 .site-nav-links a:hover, .site-nav-links a.active { color: var(--purple); border-bottom-color: var(--purple); }
 .site-nav-links svg { font-size: 15px; }
-.messages-shell { min-height: calc(100vh - 70px); padding: 0; background: #f5f5f5; }
-.messages-layout { display: grid; grid-template-columns: 390px minmax(0, 1fr); height: calc(100vh - 70px); background: #fff; }
+.messages-shell { min-height: calc(100vh - 70px); padding: 0; background: var(--paper); }
+.messages-layout { display: grid; grid-template-columns: 390px minmax(0, 1fr); height: calc(100vh - 70px); background: var(--paper); }
 .inbox-sidebar { border-right: 1px solid var(--line); background: #fff; }
 .inbox-header { display: flex; align-items: center; justify-content: space-between; padding: 28px 26px 18px; font-size: 20px; }
 .inbox-header button { color: var(--ink); background: transparent; border: 0; font-size: 27px; }
@@ -41,7 +43,7 @@ h1 { margin: 0; font-size: 21px; line-height: 1.3; }
 .status { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
 .status span { display: inline-block; width: 6px; height: 6px; margin-right: 5px; background: #52c788; border-radius: 50%; }
 .item-tag { margin-left: auto; padding: 7px 11px; color: var(--purple); background: #f0edff; border-radius: 10px; font-size: 11px; font-weight: 600; }
-.message-list { flex: 1; width: 100%; margin: 0; padding: 30px clamp(20px, 5vw, 64px); overflow-y: auto; background: #f5f5f5; }
+.message-list { flex: 1; width: 100%; margin: 0; padding: 30px clamp(20px, 5vw, 64px); overflow-y: auto; background: var(--paper); }
 .message-row { display: flex; margin-bottom: 13px; }
 .message-row.own { justify-content: flex-end; }
 .bubble { max-width: min(78%, 460px); padding: 13px 16px 9px; border-radius: 17px; background: #ececf0; }

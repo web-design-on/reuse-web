@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import { FaComments, FaHeart, FaHome, FaShoppingCart, FaThLarge, FaUser } from "react-icons/fa";
 
 const links = [
-  { href: "/", label: "Home", icon: FaHome },
-  { href: "/categories", label: "Categorias", icon: FaThLarge },
+  { href: "/", label: "Início", icon: FaHome },
+  { href: "/categories", label: "Produtos", icon: FaThLarge },
   { href: "/favorites", label: "Favoritos", icon: FaHeart },
   { href: "/login", label: "Login/Perfil", icon: FaUser },
   { href: "/messages", label: "Chat", icon: FaComments },

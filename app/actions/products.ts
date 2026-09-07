@@ -1,6 +1,14 @@
 "use server";
 
-import type { Category, Product } from "@/lib/types";
+import { PRODUCT_CATEGORY_LABELS, type Category, type Product } from "@/lib/types";
+
+function normalizeCategoryName(value: string): string {
+  const normalized = value.trim();
+  return PRODUCT_CATEGORY_LABELS[normalized] ?? normalized
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
 
 // Remover quando produtos/categorias forem implementados pelo backend (banco de dados).
 
@@ -21,7 +29,7 @@ export async function getCategories(): Promise<Category[]> {
   if (!response.ok) throw new Error("Erro ao buscar categorias.");
 
   const data: { slug: string; name: string }[] = await response.json();
-  return data.map(({ slug, name }) => ({ slug, name }));
+  return data.map(({ slug, name }) => ({ slug, name: normalizeCategoryName(name || slug) }));
 }
 
 export async function getProduct(id: string): Promise<Product> {

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { registerUser } from '@/lib/api';
@@ -44,63 +43,98 @@ export default function CadastroPage() {
     };
 
     return (
-        <div className={styles.container}>
-            <Image src="/images/bubble04.png" className={styles.bubble04} alt="" width={310} height={310} />
-            <Image src="/images/bubble02.png" className={styles.bubble02} alt="" width={310} height={310} />
-            <Image src="/images/bubble01.png" className={styles.bubble01} alt="" width={340} height={340} />
-            <Image src="/images/bubble03.png" className={styles.bubble03} alt="" width={110} height={110} />
+        <main className={styles.page}>
+            <section className={styles.panel}>
+                <aside className={styles.brandColumn}>
+                    <div className={styles.brandHeader}>
+                        <span className={styles.brandMark}>R</span>
+                        <span className={styles.brandText}>ReUse</span>
+                    </div>
 
-            <div className={styles.content}>
-                <div className={styles.headerSection}>
-                    <h1 className={styles.title}>Cadastro</h1>
-                    <p className={styles.subtitle}>
-                        Vamos começar sua jornada! <span className={styles.heart}>♥</span>
-                    </p>
+                    <div className={styles.contentBlock}>
+                        <span className={styles.eyebrow}>Compre melhor</span>
+                        <h1>Encontre peças que fazem sentido para você.</h1>
+                        <p>
+                            Uma plataforma para descobrir itens de qualidade, valor real e histórias que continuam valendo a pena.
+                        </p>
+                    </div>
+
+                    <div className={styles.visual} aria-hidden="true">
+                        <div className={styles.visualCardLarge} />
+                        <div className={styles.visualCardSmall} />
+                        <div className={styles.visualBadge}>+1,2 mil usuários</div>
+                    </div>
+
+                    <ul className={styles.featureList}>
+                        <li>Itens verificados</li>
+                        <li>Ofertas mais inteligentes</li>
+                        <li>Conexão com compradores reais</li>
+                    </ul>
+                </aside>
+
+                <div className={styles.formColumn}>
+                    <div className={styles.headerSection}>
+                        <span className={styles.eyebrow}>Cadastro</span>
+                        <h2 className={styles.title}>Crie sua conta</h2>
+                        <p className={styles.subtitle}>Vamos começar sua jornada ReUse.</p>
+                    </div>
+
+                    <div className={styles.form}>
+                        <label className={styles.field}>
+                            <span>Nome completo</span>
+                            <input
+                                className={styles.input}
+                                placeholder="Seu nome"
+                                value={nome}
+                                onChange={(e) => setNome(e.target.value)}
+                                autoCapitalize="words"
+                            />
+                        </label>
+
+                        <label className={styles.field}>
+                            <span>Usuário</span>
+                            <input
+                                className={styles.input}
+                                placeholder="@seuusuario"
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
+                                autoCapitalize="none"
+                                autoCorrect="off"
+                            />
+                        </label>
+
+                        <label className={styles.field}>
+                            <span>Senha</span>
+                            <input
+                                className={styles.input}
+                                type="password"
+                                placeholder="••••••••"
+                                value={senha}
+                                onChange={(e) => setSenha(e.target.value)}
+                            />
+                        </label>
+
+                        <label className={styles.field}>
+                            <span>Confirmar senha</span>
+                            <input
+                                className={styles.input}
+                                type="password"
+                                placeholder="Repita sua senha"
+                                value={confirmarSenha}
+                                onChange={(e) => setConfirmarSenha(e.target.value)}
+                            />
+                        </label>
+
+                        <button className={styles.btnEntrar} onClick={handleCadastrar} disabled={loading}>
+                            {loading ? 'Cadastrando...' : 'Cadastrar'}
+                        </button>
+
+                        <button className={styles.btnCancelar} onClick={handleCancelar}>
+                            Já tenho conta
+                        </button>
+                    </div>
                 </div>
-
-                <div className={styles.form}>
-                    <input
-                        className={styles.input}
-                        placeholder="Nome"
-                        value={nome}
-                        onChange={(e) => setNome(e.target.value)}
-                        autoCapitalize="words"
-                    />
-
-                    <input
-                        className={styles.input}
-                        placeholder="Usuário"
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
-                        autoCapitalize="none"
-                        autoCorrect="off"
-                    />
-
-                    <input
-                        className={styles.input}
-                        type="password"
-                        placeholder="Senha"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
-                    />
-
-                    <input
-                        className={styles.input}
-                        type="password"
-                        placeholder="Confirmar senha"
-                        value={confirmarSenha}
-                        onChange={(e) => setConfirmarSenha(e.target.value)}
-                    />
-
-                    <button className={styles.btnEntrar} onClick={handleCadastrar} disabled={loading}>
-                        {loading ? 'Cadastrando...' : 'Cadastrar'}
-                    </button>
-
-                    <button className={styles.btnCancelar} onClick={handleCancelar}>
-                        Já tenho conta
-                    </button>
-                </div>
-            </div>
-        </div>
+            </section>
+        </main>
     );
 }

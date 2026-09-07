@@ -4,28 +4,37 @@
     justify-content: space-between;
     gap: 14px;
     width: 100%;
-    padding: 20px;
+    min-height: 120px;
+    padding: 18px 16px;
     text-align: left;
-    background: var(--tint-soft);
-    border: 0;
-    border-radius: 12px;
+    background: linear-gradient(180deg, #fff 0%, #f7f4ff 100%);
+    border: 1px solid rgba(124, 115, 150, 0.12);
+    border-radius: 18px;
+    box-shadow: 0 10px 20px rgba(58, 47, 99, 0.04);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(58, 47, 99, 0.08);
 }
 
 .image {
-    width: 36px;
-    height: 36px;
+    width: 88px;
+    height: 88px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 14px;
 }
 
 .label {
     flex: 1;
-    color: var(--purple);
-    font-size: 16px;
+    color: #1b1a23;
+    font-size: 1.05rem;
     font-weight: 600;
 }
 
 .icon {
     flex-shrink: 0;
-    color: var(--purple);
+    color: #5d49d6;
 }

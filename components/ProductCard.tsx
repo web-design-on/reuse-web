@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { FaHeart, FaRegHeart, FaShoppingCart } from 'react-icons/fa';
 import { useFavorites } from '@/hooks/use-Favorites';
 import { useCart } from '@/hooks/use-Cart';
-import type { Product } from '@/lib/types';
+import { PRODUCT_CATEGORY_LABELS, PRODUCT_SELLERS, type Product } from '@/lib/types';
 import styles from './ProductCard.module.css';
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -13,6 +13,8 @@ export default function ProductCard({ product }: { product: Product }) {
     const image = product.images?.[0] ?? product.thumbnail;
     const favorite = isFavorite(product.id);
     const inCart = isInCart(product.id);
+    const seller = PRODUCT_SELLERS[product.id % PRODUCT_SELLERS.length];
+    const categoryLabel = PRODUCT_CATEGORY_LABELS[product.category] ?? product.category?.replace(/-/g, ' ') ?? 'Produto';
 
     return (
         <div className={styles.card}>
@@ -25,6 +27,7 @@ export default function ProductCard({ product }: { product: Product }) {
                         <div className={styles.imagePlaceholder} aria-hidden="true" />
                     )}
                 </Link>
+
                 <button
                     type="button"
                     className={`${styles.favBtn} ${favorite ? styles.favBtnActive : ''}`}
@@ -35,11 +38,18 @@ export default function ProductCard({ product }: { product: Product }) {
                     {favorite ? <FaHeart /> : <FaRegHeart />}
                 </button>
             </div>
-            <Link href={`/products/${product.id}`} className={styles.infoLink}>
-                <p className={styles.name}>{product.title}</p>
-            </Link>
-            <div className={styles.footer}>
-                <span className={styles.price}>R$ {product.price.toFixed(2)}</span>
+
+            <div className={styles.content}>
+                <span className={styles.category}>{categoryLabel}</span>
+
+                <Link href={`/products/${product.id}`} className={styles.infoLink}>
+                    <p className={styles.name}>{product.title}</p>
+                </Link>
+
+                <div className={styles.footer}>
+                    <span className={styles.price}>R$ {product.price.toFixed(2)}</span>
+                </div>
+
                 <button
                     type="button"
                     className={`${styles.cartBtn} ${inCart ? styles.cartBtnActive : ''}`}
@@ -48,7 +58,13 @@ export default function ProductCard({ product }: { product: Product }) {
                     aria-pressed={inCart}
                 >
                     <FaShoppingCart />
+                    <span>{inCart ? 'remover do carrinho' : 'adicionar ao carrinho'}</span>
                 </button>
+
+                <div className={styles.sellerRow}>
+                    <img src={seller.avatar} alt={seller.name} className={styles.sellerAvatar} />
+                    <span className={styles.sellerName}>{seller.name}</span>
+                </div>
             </div>
         </div>
     );

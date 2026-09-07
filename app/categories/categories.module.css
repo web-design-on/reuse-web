@@ -4,63 +4,236 @@
 }
 
 .page {
-    max-width: 720px;
+    max-width: 1220px;
     margin: 0 auto;
-    padding: 32px 24px 60px;
+    padding: 28px 24px 60px;
+}
+
+.topbar {
+    margin-bottom: 18px;
 }
 
 .title {
-    margin: 0 0 20px;
-    font-size: 24px;
-    font-weight: 700;
+    margin: 0;
+    color: var(--purple);
+    font-size: clamp(1.3rem, 1.5vw, 1.7rem);
+    font-weight: 500;
+    letter-spacing: 0;
 }
 
-.empty {
-    text-align: center;
-    margin-top: 20px;
-    color: var(--muted);
-    font-size: 14px;
-}
-
-.back {
+.toolbar {
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 15px;
-    padding: 0;
-    color: var(--purple);
-    background: none;
-    border: 0;
-    font-weight: 600;
-    font-size: 14px;
+    gap: 14px;
+    margin-bottom: 20px;
 }
 
-.categoryList {
+.searchBox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    height: 48px;
+    padding: 0 16px;
+    background: #fff;
+    border: 1px solid rgba(124, 115, 150, 0.18);
+    border-radius: 14px;
+}
+
+.searchBox input {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    outline: none;
+    color: #282335;
+    font-size: 0.86rem;
+}
+
+.searchBox input::-webkit-search-cancel-button {
+    display: none;
+}
+
+.clearSearchButton {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    color: #7a758d;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+}
+
+.clearSearchButton:hover {
+    color: #2f2a39;
+    background: rgba(107, 78, 255, 0.08);
+}
+
+.searchBox input::placeholder {
+    color: #7a758d;
+}
+
+.searchIcon {
+    color: #7a758d;
+    font-size: 0.94rem;
+}
+
+.sortButton {
+    min-width: 120px;
+    height: 48px;
+    padding: 0 16px;
+    border: 1px solid rgba(124, 115, 150, 0.18);
+    border-radius: 12px;
+    background: #fff;
+    color: #2f2a39;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 26px;
+}
+
+.sidebar {
+    padding: 20px 18px 18px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(128, 120, 158, 0.12);
+    border-radius: 24px;
+}
+
+.filterBlock {
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(128, 120, 158, 0.12);
+    margin-bottom: 18px;
+}
+
+.filterBlock:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.filterBlock h2 {
+    margin: 0 0 14px;
+    color: #1f1b2a;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.filterList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
+    gap: 8px;
+}
+
+.filterButton {
+    width: 100%;
+    padding: 8px 10px;
+    background: transparent;
+    border: 0;
+    border-radius: 10px;
+    color: #3d374a;
+    text-align: left;
+    font-size: 0.84rem;
+    font-weight: 300;
+    cursor: pointer;
+}
+
+.filterButtonActive {
+    background: rgba(107, 78, 255, 0.12);
+    color: #4a3cc8;
+    font-weight: 400;
+}
+
+.checkboxRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    color: #433d4d;
+    font-size: 0.94rem;
+}
+
+.checkboxRow input {
+    accent-color: var(--purple);
+}
+
+.priceRow {
+    display: flex;
+    justify-content: space-between;
     gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid rgba(124, 115, 150, 0.18);
+    border-radius: 10px;
+    background: #fff;
+    color: #676179;
+    font-size: 0.8rem;
+}
+
+.applyButton {
+    width: 100%;
+    margin-top: 18px;
+    padding: 10px 14px;
+    border: 1px solid rgba(124, 115, 150, 0.16);
+    border-radius: 12px;
+    background: #fff;
+    color: #262334;
+    font-size: 0.82rem;
+    font-weight: 300;
+    cursor: pointer;
+}
+
+.results {
+    min-width: 0;
+}
+
+.resultsHeader {
+    margin-bottom: 18px;
+    color: #4c465c;
+    font-size: 0.88rem;
+    font-weight: 600;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px 16px;
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    gap: 18px;
 }
 
-@media (min-width: 640px) {
-    .grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
+.empty {
+    margin-top: 22px;
+    color: #706a7d;
+    font-size: 0.95rem;
 }
 
-@media (min-width: 900px) {
-    .grid {
-        grid-template-columns: repeat(4, 1fr);
+@media (max-width: 980px) {
+    .content {
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 760px) {
     .page {
         padding: 24px 18px 44px;
+    }
+
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sortButton {
+        width: 100%;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
     }
 }
