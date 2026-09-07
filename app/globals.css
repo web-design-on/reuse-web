@@ -18,6 +18,13 @@ button { cursor: pointer; }
 .site-nav-links svg { font-size: 15px; }
 .site-nav-links a.cart-link { align-self: center; min-height: 38px; margin: 0 4px; padding: 0 16px; color: #fff; background: var(--purple); border: 0; border-radius: 10px; }
 .site-nav-links a.cart-link:hover, .site-nav-links a.cart-link.active { color: #fff; background: #563be9; border-bottom-color: transparent; }
+.site-nav-auth { display: flex; align-items: stretch; gap: 6px; margin-left: 6px; }
+.site-nav-links a.site-nav-signin { display: flex; align-items: center; gap: 8px; padding: 0 14px; color: var(--muted); font-size: 13px; font-weight: 500; text-decoration: none; border-bottom: 3px solid transparent; }
+.site-nav-links a.site-nav-signin:hover { color: var(--purple); border-bottom-color: var(--purple); }
+.site-nav-links a.site-nav-signup { align-self: center; display: flex; align-items: center; padding: 0 20px; height: 38px; margin: 0 4px; color: #fff; background: var(--purple); border: 0; border-radius: 19px; font-size: 13px; font-weight: 600; text-decoration: none; }
+.site-nav-links a.site-nav-signup:hover { color: #fff; background: #563be9; border-bottom-color: transparent; }
+.site-nav-signout { display: flex; align-items: center; gap: 8px; margin-left: 6px; padding: 0 14px; color: var(--muted); background: transparent; border: 0; font-size: 13px; font-weight: 500; }
+.site-nav-signout:hover { color: var(--danger); }
 .messages-shell { min-height: calc(100vh - 70px); padding: 0; background: var(--paper); }
 .messages-layout { display: grid; grid-template-columns: 390px minmax(0, 1fr); height: calc(100vh - 70px); background: var(--paper); }
 .inbox-sidebar { border-right: 1px solid var(--line); background: #fff; }
