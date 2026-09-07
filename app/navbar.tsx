@@ -2,45 +2,34 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { FaComments, FaHeart, FaHome, FaShoppingCart, FaThLarge, FaUser } from "react-icons/fa";
+import { usePathname, useRouter } from "next/navigation";
+import { FaComments, FaHeart, FaHome, FaShoppingCart, FaSignOutAlt, FaThLarge } from "react-icons/fa";
+import { useAuth } from "@/contexts/AuthContext";
 
-const links = [
+const loggedInLinks = [
   { href: "/", label: "Início", icon: FaHome },
   { href: "/categories", label: "Produtos", icon: FaThLarge },
   { href: "/favorites", label: "Favoritos", icon: FaHeart },
-  { href: "/login", label: "Login/Perfil", icon: FaUser },
   { href: "/messages", label: "Chat", icon: FaComments },
   { href: "/cart", label: "Carrinho", icon: FaShoppingCart },
 ];
 
+const loggedOutLinks = [
+  { href: "/", label: "Início", icon: FaHome },
+  { href: "/categories", label: "Produtos", icon: FaThLarge },
+];
+
 export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
   const pathname = usePathname();
-  const [loggedIn, setLoggedIn] = useState(isLoggedIn);
+  const router = useRouter();
+  const { user, loading, signOut } = useAuth();
+  const loggedIn = loading ? isLoggedIn : Boolean(user);
+  const navigationLinks = loggedIn ? loggedInLinks : loggedOutLinks;
 
-  useEffect(() => {
-    const syncSession = () => setLoggedIn(Boolean(localStorage.getItem("@reuse_user")));
-    const timer = window.setTimeout(syncSession, 0);
-    window.addEventListener("reuse-session-changed", syncSession);
-    window.addEventListener("storage", syncSession);
-
-    return () => {
-      window.clearTimeout(timer);
-      window.removeEventListener("reuse-session-changed", syncSession);
-      window.removeEventListener("storage", syncSession);
-    };
-  }, []);
-
-  const accountLink = { href: "/login", label: loggedIn ? "Conta" : "Login", icon: FaUser };
-  const navigationLinks = [
-    links[0],
-    links[1],
-    links[2],
-    accountLink,
-    links[4],
-    links[5],
-  ];
+  async function handleSignOut() {
+    await signOut();
+    router.push("/login");
+  }
 
   return (
     <nav className="site-navbar" aria-label="Navegação principal">
@@ -61,6 +50,16 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
             </Link>
           );
         })}
+        {loggedIn ? (
+          <button type="button" className="site-nav-signout" onClick={handleSignOut}>
+            <FaSignOutAlt aria-hidden="true" />
+          </button>
+        ) : (
+          <div className="site-nav-auth">
+            <Link className="site-nav-signin" href="/login">Entrar</Link>
+            <Link className="site-nav-signup" href="/register">Cadastrar</Link>
+          </div>
+        )}
       </div>
     </nav>
   );
