@@ -51,7 +51,11 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
         {navigationLinks.map(({ href, label, icon: Icon }) => {
           const active = href === "/" ? pathname === href : pathname.startsWith(href);
           return (
-            <Link className={active ? "active" : ""} href={href} key={href}>
+            <Link
+              className={`${active ? "active " : ""}${href === "/cart" ? "cart-link" : ""}`}
+              href={href}
+              key={href}
+            >
               <Icon aria-hidden="true" />
               <span>{label}</span>
             </Link>
