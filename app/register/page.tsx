@@ -31,7 +31,7 @@ export default function CadastroPage() {
         try {
             const data = await registerUser(nome, userName, senha);
             await signIn(data);
-            router.replace('/profile');
+            router.replace('/');
         } catch (error) {
             alert(error instanceof Error ? error.message : 'Ops... Algo deu errado. Tente novamente mais tarde.');
         } finally {

@@ -27,7 +27,7 @@ export default function LoginPage() {
       await signIn(data);
       setUserName('');
       setSenha('');
-      router.replace('/profile');
+      router.replace('/');
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Ops... Algo deu errado. Tente novamente mais tarde.');
     } finally {

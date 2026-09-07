@@ -32,7 +32,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
     };
   }, []);
 
-  const accountLink = { href: loggedIn ? "/profile" : "/login", label: loggedIn ? "Perfil" : "Login", icon: FaUser };
+  const accountLink = { href: "/login", label: loggedIn ? "Conta" : "Login", icon: FaUser };
   const navigationLinks = [
     links[0],
     links[1],
