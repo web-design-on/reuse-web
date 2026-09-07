@@ -186,6 +186,15 @@
     text-decoration: none;
 }
 
+.formError {
+    margin: -4px 0 0;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: #c0392b;
+    font-size: 0.76rem;
+    text-align: center;
+}
+
 .btnEntrar {
     height: 42px;
     color: #536321;

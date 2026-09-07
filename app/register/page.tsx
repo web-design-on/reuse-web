@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaHandshake, FaLeaf, FaPiggyBank } from 'react-icons/fa';
 import { useAuth } from '@/contexts/AuthContext';
-import { registerUser } from '@/lib/api';
+import { registerUser } from '@/app/actions/auth';
 import styles from './cadastro.module.css';
 
 export default function CadastroPage() {
@@ -13,17 +13,20 @@ export default function CadastroPage() {
     const [senha, setSenha] = useState('');
     const [confirmarSenha, setConfirmarSenha] = useState('');
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const router = useRouter();
     const { signIn } = useAuth();
 
     const handleCadastrar = async () => {
+        setError('');
+
         if (!nome.trim() || !userName.trim() || !senha.trim() || !confirmarSenha.trim()) {
-            alert('Por favor, preencha todos os campos.');
+            setError('Por favor, preencha todos os campos.');
             return;
         }
 
         if (senha !== confirmarSenha) {
-            alert('As senhas não coincidem.');
+            setError('As senhas não coincidem.');
             return;
         }
 
@@ -32,8 +35,8 @@ export default function CadastroPage() {
             const data = await registerUser(nome, userName, senha);
             await signIn(data);
             router.replace('/');
-        } catch (error) {
-            alert(error instanceof Error ? error.message : 'Ops... Algo deu errado. Tente novamente mais tarde.');
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Ops... Algo deu errado. Tente novamente mais tarde.');
         } finally {
             setLoading(false);
         }
@@ -117,6 +120,8 @@ export default function CadastroPage() {
                             <input type="checkbox" />
                             <span>Li e aceito os <a href="#termos">Termos de Uso</a> e a <a href="#privacidade">Política de Privacidade</a></span>
                         </label>
+
+                        {error && <p className={styles.formError}>{error}</p>}
 
                         <button className={styles.btnEntrar} onClick={handleCadastrar} disabled={loading}>
                             {loading ? 'Cadastrando...' : 'Criar conta grátis'}
