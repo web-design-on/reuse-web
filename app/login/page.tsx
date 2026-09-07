@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaApple, FaGoogle, FaRecycle } from 'react-icons/fa';
 import { useAuth } from '@/contexts/AuthContext';
-import { authenticateUser } from '@/lib/api';
+import { authenticateUser } from '@/app/actions/auth';
 import styles from './login.module.css';
 import Link from 'next/link';
 
@@ -12,12 +12,15 @@ export default function LoginPage() {
   const [userName, setUserName] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const router = useRouter();
   const { signIn } = useAuth();
 
   const handleEntrar = async () => {
+    setError('');
+
     if (!userName.trim() || !senha.trim()) {
-      alert('Por favor, preencha todos os campos.');
+      setError('Por favor, preencha todos os campos.');
       return;
     }
 
@@ -28,8 +31,8 @@ export default function LoginPage() {
       setUserName('');
       setSenha('');
       router.replace('/');
-    } catch (error) {
-      alert(error instanceof Error ? error.message : 'Ops... Algo deu errado. Tente novamente mais tarde.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ops... Algo deu errado. Tente novamente mais tarde.');
     } finally {
       setLoading(false);
     }
@@ -67,6 +70,7 @@ export default function LoginPage() {
               <div className={styles.passwordLabel}><span>Senha</span><button type="button">Esqueceu?</button></div>
               <input className={styles.input} type="password" placeholder="Senha" value={senha} onChange={(event) => setSenha(event.target.value)} />
             </label>
+            {error && <p className={styles.formError}>{error}</p>}
             <button className={styles.btnEntrar} onClick={handleEntrar} disabled={loading}>
               {loading ? 'Entrando...' : 'Entrar'}
             </button>
