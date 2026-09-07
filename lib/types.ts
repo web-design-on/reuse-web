@@ -30,6 +30,14 @@ export const PRODUCT_CATEGORY_LABELS: Record<string, string> = {
   tablets: "Tablets",
   "mobile-accessories": "Acessórios para celular",
   "sports-accessories": "Acessórios esportivos",
+  moveis: "Móveis",
+  decoracao: "Decoração",
+  cozinha: "Cozinha",
+  eletronicos: "Eletrônicos",
+  roupas: "Roupas",
+  calcados: "Calçados",
+  acessorios: "Acessórios",
+  esportes: "Esportes",
 };
 
 export const PRODUCT_SELLERS = [
@@ -49,17 +57,17 @@ export interface ProductDimensions {
 export interface Product {
   id: number;
   title: string;
-  description?: string;
+  description?: string | null;
   category: string;
   price: number;
-  rating?: number;
-  stock?: number;
-  brand?: string;
+  rating?: number | null;
+  stock?: number | null;
+  brand?: string | null;
   tags?: string[];
-  availabilityStatus?: string;
-  warrantyInformation?: string;
-  shippingInformation?: string;
-  dimensions?: ProductDimensions;
+  availabilityStatus?: string | null;
+  warrantyInformation?: string | null;
+  shippingInformation?: string | null;
+  dimensions?: ProductDimensions | null;
   images?: string[];
-  thumbnail?: string;
+  thumbnail?: string | null;
 }

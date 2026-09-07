@@ -33,3 +33,35 @@ model Message {
   @@index([conversationId, createdAt])
   @@index([senderId])
 }
+
+model Category {
+  slug String @id
+  name String
+}
+
+model Product {
+  id                  Int      @id @default(autoincrement())
+  title               String
+  description         String?
+  category            String
+  price               Float
+  rating              Float?
+  stock               Int?
+  brand               String?
+  tags                String[]
+  availabilityStatus  String?
+  warrantyInformation String?
+  shippingInformation String?
+  dimensions          Json?
+  images              String[]
+  thumbnail           String?
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  firstName String
+  userName  String   @unique
+  password  String
+  image     String?
+  createdAt DateTime @default(now())
+}
