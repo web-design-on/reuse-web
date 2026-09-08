@@ -32,11 +32,15 @@ export default function CadastroPage() {
 
         setLoading(true);
         try {
-            const data = await registerUser(nome, userName, senha);
-            await signIn(data);
+            const result = await registerUser(nome, userName, senha);
+            if (!result.success) {
+                setError(result.message);
+                return;
+            }
+            await signIn(result.user);
             router.replace('/');
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Ops... Algo deu errado. Tente novamente mais tarde.');
+        } catch {
+            setError('Ops... Algo deu errado. Tente novamente mais tarde.');
         } finally {
             setLoading(false);
         }

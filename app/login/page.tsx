@@ -26,13 +26,17 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const data = await authenticateUser(userName, senha);
-      await signIn(data);
+      const result = await authenticateUser(userName, senha);
+      if (!result.success) {
+        setError(result.message);
+        return;
+      }
+      await signIn(result.user);
       setUserName('');
       setSenha('');
       router.replace('/');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ops... Algo deu errado. Tente novamente mais tarde.');
+    } catch {
+      setError('Ops... Algo deu errado. Tente novamente mais tarde.');
     } finally {
       setLoading(false);
     }
