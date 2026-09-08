@@ -7,6 +7,9 @@ import { db } from "@/lib/db";
 
 const USER_COOKIE = "reuse_user_id";
 
+type SafeUser = { id: number; firstName: string; userName: string; image?: string };
+export type AuthResult = { success: true; user: SafeUser } | { success: false; message: string };
+
 async function setSessionCookie(userId: number) {
   (await cookies()).set(USER_COOKIE, String(userId), {
     httpOnly: true,
@@ -17,11 +20,11 @@ async function setSessionCookie(userId: number) {
   });
 }
 
-function toSafeUser(user: { id: number; firstName: string; userName: string; image: string | null }) {
+function toSafeUser(user: { id: number; firstName: string; userName: string; image: string | null }): SafeUser {
   return { id: user.id, firstName: user.firstName, userName: user.userName, image: user.image ?? undefined };
 }
 
-export async function registerUser(firstName: string, userName: string, password: string) {
+export async function registerUser(firstName: string, userName: string, password: string): Promise<AuthResult> {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await db.user.create({
@@ -29,25 +32,25 @@ export async function registerUser(firstName: string, userName: string, password
     });
 
     await setSessionCookie(user.id);
-    return toSafeUser(user);
+    return { success: true, user: toSafeUser(user) };
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-      throw new Error("Esse nome de usuário já existe. Tente outro.");
+      return { success: false, message: "Esse nome de usuário já existe. Tente outro." };
     }
     throw error;
   }
 }
 
-export async function authenticateUser(userName: string, password: string) {
+export async function authenticateUser(userName: string, password: string): Promise<AuthResult> {
   const user = await db.user.findUnique({ where: { userName: userName.trim() } });
   const passwordMatches = user ? await bcrypt.compare(password, user.password) : false;
 
   if (!user || !passwordMatches) {
-    throw new Error("Usuário ou senha inválidos.");
+    return { success: false, message: "Usuário ou senha inválidos." };
   }
 
   await setSessionCookie(user.id);
-  return toSafeUser(user);
+  return { success: true, user: toSafeUser(user) };
 }
 
 export async function signOutUser() {
