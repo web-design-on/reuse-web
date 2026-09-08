@@ -15,6 +15,7 @@
     background: var(--purple);
     border-radius: 20px;
     box-shadow: 0 18px 38px rgba(107, 78, 255, 0.18);
+    margin-bottom: 32px;
 }
 
 .newsletterCopy {

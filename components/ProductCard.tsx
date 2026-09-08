@@ -41,7 +41,6 @@ export default function ProductCard({ product }: { product: Product }) {
             <div className={styles.imageWrap}>
                 <Link href={`/products/${product.id}`} className={styles.imageLink}>
                     {image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
                         <img src={image} alt={product.title} className={styles.image} />
                     ) : (
                         <div className={styles.imagePlaceholder} aria-hidden="true" />
