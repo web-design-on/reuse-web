@@ -40,20 +40,21 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   return (
     <nav className="site-navbar" aria-label="Navegação principal">
-      <Link className="site-logo" href="/" aria-label="ReUse Home">
-        <Image src="/brand/logo.png" alt="ReUse" width={106} height={42} priority />
-      </Link>
-      <button
-        type="button"
-        className="site-menu-toggle"
-        onClick={() => setMenuOpen((open) => !open)}
-        aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
-        aria-expanded={menuOpen}
-        aria-controls="main-navigation"
-      >
-        {menuOpen ? <FaTimes aria-hidden="true" /> : <FaBars aria-hidden="true" />}
-      </button>
-      <div id="main-navigation" className={`site-nav-links${menuOpen ? " menu-open" : ""}`}>
+      <div className="site-navbar-inner">
+        <Link className="site-logo" href="/" aria-label="ReUse Home">
+          <Image src="/brand/logo.png" alt="ReUse" width={106} height={42} priority />
+        </Link>
+        <button
+          type="button"
+          className="site-menu-toggle"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={menuOpen}
+          aria-controls="main-navigation"
+        >
+          {menuOpen ? <FaTimes aria-hidden="true" /> : <FaBars aria-hidden="true" />}
+        </button>
+        <div id="main-navigation" className={`site-nav-links${menuOpen ? " menu-open" : ""}`}>
         {navigationLinks.map(({ href, label, icon: Icon }) => {
           const active = href === "/" ? pathname === href : pathname.startsWith(href);
           return (
@@ -78,6 +79,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
             <Link className="site-nav-signup" href="/register" onClick={closeMenu}>Cadastrar</Link>
           </div>
         )}
+        </div>
       </div>
     </nav>
   );
