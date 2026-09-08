@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import { cookies } from "next/headers";
 import Navbar from "./navbar";
 import Providers from "./providers";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -25,6 +26,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <Providers>
           <Navbar isLoggedIn={isLoggedIn} />
           {children}
+          <Footer />
         </Providers>
       </body>
     </html>
