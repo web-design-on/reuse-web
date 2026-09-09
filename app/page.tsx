@@ -4,11 +4,9 @@ import ProductCard from "@/components/ProductCard";
 import { useProducts } from "@/hooks/use-Products";
 import { Product } from "@/lib/types";
 
- const {
-    data: products,
-  } = useProducts(undefined);
-
 export default function HomePage() {
+  const { data: products } = useProducts(undefined);
+
   return (
     <div className="bg-[#F8F7FF]">
       <section className="bg-[#5B50E8] relative overflow-hidden  mb-12">
