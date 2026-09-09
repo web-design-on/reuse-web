@@ -36,35 +36,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-extrabold text-[#1C1B2E]">
-              Destaques do dia
-            </h2>
-            <p className="text-gray-500 text-sm mt-1">
-              Selecionados com carinho para você
-            </p>
-          </div>
-          <button
-            onClick={() => window.location.href = '/categories'}
-            className="text-sm font-semibold text-[#5B50E8] hover:underline"
-          >
-            Ver todos →
-          </button>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {(products ?? []).map((product: Product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-            />
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-4 sm:mx-6 lg:mx-8 mb-12 max-w-7xl lg:mx-auto lg:px-8">
+     <section className="mx-4 sm:mx-6 lg:mx-8 mb-12 max-w-7xl lg:mx-auto lg:px-8">
         <div className="bg-[#1C1B2E] rounded-3xl p-8 lg:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
           <div
             className="absolute inset-0 opacity-20"
@@ -109,6 +81,35 @@ export default function HomePage() {
         </div>
       </section>
 
+      
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-extrabold text-[#1C1B2E]">
+              Destaques do dia
+            </h2>
+            <p className="text-gray-500 text-sm mt-1">
+              Selecionados com carinho para você
+            </p>
+          </div>
+          <button
+            onClick={() => window.location.href = '/categories'}
+            className="text-sm font-semibold text-[#5B50E8] hover:underline"
+          >
+            Ver todos →
+          </button>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {(products ?? []).slice(0, 5).map((product: Product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+            />
+          ))}
+        </div>
+      </section>
+
+ 
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
           <div className="bg-[#EAE8FD] rounded-3xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
