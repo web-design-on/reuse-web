@@ -100,7 +100,7 @@ export default function HomePage() {
           </button>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {(products ?? []).slice(0, 5).map((product: Product) => (
+          {(products ?? []).slice(0, 4).map((product: Product) => (
             <ProductCard
               key={product.id}
               product={product}
