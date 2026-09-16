@@ -83,16 +83,22 @@ public/                    # Arquivos públicos da aplicação
 5. Crie as tabelas do banco:
 
    ```bash
-   npx prisma migrate dev --name init
+   npx prisma db push
    ```
 
-6. Inicie o servidor de desenvolvimento:
+6. Popule categorias e produtos de exemplo:
+
+   ```bash
+   npx prisma db seed
+   ```
+
+7. Inicie o servidor de desenvolvimento:
 
    ```bash
    npm run dev
    ```
 
-7. Acesse `http://localhost:3000` no navegador.
+8. Acesse `http://localhost:3000` no navegador.
 
 ---
 
