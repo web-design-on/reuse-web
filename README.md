@@ -83,7 +83,7 @@ public/                    # Arquivos públicos da aplicação
 5. Crie as tabelas do banco:
 
    ```bash
-   npx prisma db push
+   npx prisma migrate dev
    ```
 
 6. Popule categorias e produtos de exemplo:
@@ -92,6 +92,12 @@ public/                    # Arquivos públicos da aplicação
    npx prisma db seed
    ```
 
+   O seed também cria usuários de demonstração para testes do chatbot:
+
+   - usuário: `sarah` | senha: `reuse123`
+   - usuário: `rebeca` | senha: `reuse123`
+   - usuário: `stephanie` | senha: `reuse123`
+
 7. Inicie o servidor de desenvolvimento:
 
    ```bash
@@ -99,6 +105,11 @@ public/                    # Arquivos públicos da aplicação
    ```
 
 8. Acesse `http://localhost:3000` no navegador.
+
+## Chatbot e Handoff
+
+- Contrato OpenAPI do chatbot: `docs/chatbot-openapi.yaml`
+- Resumo da entrega da Pessoa 1: `docs/chatbot-handoff.md`
 
 ---
 

@@ -1,0 +1,136 @@
+openapi: 3.0.3
+info:
+  title: ReUse Chatbot API
+  version: 1.0.0
+  description: API para automação de tarefas da plataforma ReUse via assistente virtual.
+servers:
+  - url: https://seu-dominio.vercel.app
+    description: Produção
+paths:
+  /api/chatbot/offers/list-active:
+    post:
+      summary: Lista as ofertas ativas do usuário logado
+      operationId: listActiveOffers
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                limit:
+                  type: integer
+                  minimum: 1
+                  maximum: 50
+                  default: 20
+      responses:
+        '200':
+          description: Lista de ofertas retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum: [true]
+                  total:
+                    type: integer
+                  offers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Offer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /api/chatbot/offers/pause:
+    post:
+      summary: Pausa ofertas ativas do usuário logado
+      operationId: pauseOffers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pauseAll:
+                  type: boolean
+                  description: Se true, pausa todas as ofertas ativas do usuário.
+                offerIds:
+                  type: array
+                  description: Lista de IDs para pausar quando pauseAll for false.
+                  items:
+                    type: integer
+                    minimum: 1
+      responses:
+        '200':
+          description: Ofertas pausadas com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum: [true]
+                  pausedCount:
+                    type: integer
+                  pausedOfferIds:
+                    type: array
+                    items:
+                      type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+components:
+  schemas:
+    Offer:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        price:
+          type: number
+          format: float
+        status:
+          type: string
+          enum: [ACTIVE, PAUSED]
+      required: [id, title, price, status]
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+        code:
+          type: string
+          enum: [BAD_REQUEST, UNAUTHORIZED, FORBIDDEN]
+        message:
+          type: string
+      required: [success, code, message]
+  responses:
+    Unauthorized:
+      description: Usuário não autenticado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Recurso não autorizado para este usuário
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

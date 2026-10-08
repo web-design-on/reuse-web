@@ -59,6 +59,8 @@ export interface Product {
   title: string;
   description?: string | null;
   category: string;
+  ownerId?: number | null;
+  status?: "ACTIVE" | "PAUSED";
   price: number;
   rating?: number | null;
   stock?: number | null;

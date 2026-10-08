@@ -1,6 +1,13 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
+
+const demoUsers = [
+  { firstName: 'Sarah', userName: 'sarah', password: 'reuse123' },
+  { firstName: 'Rebeca', userName: 'rebeca', password: 'reuse123' },
+  { firstName: 'Stephanie', userName: 'stephanie', password: 'reuse123' },
+];
 
 const categories = [
   {
@@ -637,12 +644,34 @@ const products = [
 ];
 
 async function main() {
+  const hashedPassword = await bcrypt.hash('reuse123', 10);
+
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
-  await prisma.category.createMany({ data: categories });
-  await prisma.product.createMany({ data: products });
+  await prisma.user.deleteMany();
 
-  console.log(`Seed concluído: ${categories.length} categorias, ${products.length} produtos.`);
+  const createdUsers = await Promise.all(
+    demoUsers.map((user) =>
+      prisma.user.create({
+        data: {
+          firstName: user.firstName,
+          userName: user.userName,
+          password: hashedPassword,
+        },
+      })
+    )
+  );
+
+  const productsWithOwners = products.map((product, index) => ({
+    ...product,
+    ownerId: createdUsers[index % createdUsers.length].id,
+    status: 'ACTIVE',
+  }));
+
+  await prisma.category.createMany({ data: categories });
+  await prisma.product.createMany({ data: productsWithOwners });
+
+  console.log(`Seed concluído: ${categories.length} categorias, ${products.length} produtos, ${createdUsers.length} usuários.`);
 }
 
 main()

@@ -8,6 +8,8 @@ function toProduct(product: {
   title: string;
   description: string | null;
   category: string;
+  ownerId: number | null;
+  status: "ACTIVE" | "PAUSED";
   price: number;
   rating: number | null;
   stock: number | null;
@@ -28,7 +30,10 @@ function toProduct(product: {
 
 export async function getProducts(category?: string): Promise<Product[]> {
   const products = await db.product.findMany({
-    where: category ? { category } : undefined,
+    where: {
+      ...(category ? { category } : {}),
+      status: "ACTIVE",
+    },
     orderBy: { id: "asc" },
   });
 
@@ -40,7 +45,12 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function getProduct(id: string): Promise<Product> {
-  const product = await db.product.findUnique({ where: { id: Number(id) } });
+  const product = await db.product.findFirst({
+    where: {
+      id: Number(id),
+      status: "ACTIVE",
+    },
+  });
   if (!product) throw new Error("Produto não encontrado.");
 
   return toProduct(product);

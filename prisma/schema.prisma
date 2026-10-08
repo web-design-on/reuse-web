@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum OfferStatus {
+  ACTIVE
+  PAUSED
+}
+
 model Conversation {
   id               String    @id @default(cuid())
   itemId           Int?
@@ -44,6 +49,8 @@ model Product {
   title               String
   description         String?
   category            String
+  ownerId             Int?
+  status              OfferStatus @default(ACTIVE)
   price               Float
   rating              Float?
   stock               Int?
@@ -55,6 +62,11 @@ model Product {
   dimensions          Json?
   images              String[]
   thumbnail           String?
+  owner               User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+
+  @@index([ownerId])
+  @@index([ownerId, status])
+  @@index([status])
 }
 
 model User {
@@ -64,4 +76,5 @@ model User {
   password  String
   image     String?
   createdAt DateTime @default(now())
+  products  Product[]
 }
