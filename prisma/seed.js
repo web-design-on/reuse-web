@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const demoUsers = [
   { firstName: 'Sarah', userName: 'sarah', password: 'reuse123' },
   { firstName: 'Rebeca', userName: 'rebeca', password: 'reuse123' },
-  { firstName: 'Stephanie', userName: 'stephanie', password: 'reuse123' },
+  { firstName: 'Natali', userName: 'natali', password: 'reuse123' },
 ];
 
 const categories = [
@@ -646,20 +646,16 @@ const products = [
 async function main() {
   const hashedPassword = await bcrypt.hash('reuse123', 10);
 
-  await prisma.product.deleteMany();
-  await prisma.category.deleteMany();
-  await prisma.user.deleteMany();
-
   const createdUsers = await Promise.all(
-    demoUsers.map((user) =>
-      prisma.user.create({
-        data: {
-          firstName: user.firstName,
-          userName: user.userName,
-          password: hashedPassword,
-        },
-      })
-    )
+    demoUsers.map((user) => prisma.user.upsert({
+      where: { userName: user.userName },
+      update: {},
+      create: {
+        firstName: user.firstName,
+        userName: user.userName,
+        password: hashedPassword,
+      },
+    }))
   );
 
   const productsWithOwners = products.map((product, index) => ({
@@ -668,8 +664,18 @@ async function main() {
     status: 'ACTIVE',
   }));
 
-  await prisma.category.createMany({ data: categories });
-  await prisma.product.createMany({ data: productsWithOwners });
+  await prisma.category.createMany({ data: categories, skipDuplicates: true });
+
+  for (const product of productsWithOwners) {
+    const existingProduct = await prisma.product.findFirst({
+      where: { title: product.title, ownerId: product.ownerId },
+      select: { id: true },
+    });
+
+    if (!existingProduct) {
+      await prisma.product.create({ data: product });
+    }
+  }
 
   console.log(`Seed concluído: ${categories.length} categorias, ${products.length} produtos, ${createdUsers.length} usuários.`);
 }

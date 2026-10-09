@@ -80,6 +80,14 @@ public/                    # Arquivos públicos da aplicação
    cp .env.example .env
    ```
 
+   Gere segredos distintos para `SESSION_SECRET` e `CHATBOT_API_TOKEN`. O primeiro assina as sessões web; o segundo autentica chamadas servidor-a-servidor e também deve ser salvo no cofre de credenciais do Watson. Nunca exponha nenhum deles no frontend:
+
+   ```bash
+   openssl rand -hex 32
+   ```
+
+   Execute o comando uma vez para cada variável. Após configurar `SESSION_SECRET`, todos os usuários precisarão entrar novamente.
+
 5. Crie as tabelas do banco:
 
    ```bash
@@ -96,7 +104,9 @@ public/                    # Arquivos públicos da aplicação
 
    - usuário: `sarah` | senha: `reuse123`
    - usuário: `rebeca` | senha: `reuse123`
-   - usuário: `stephanie` | senha: `reuse123`
+   - usuário: `natali` | senha: `reuse123`
+
+   O seed é aditivo e não apaga registros existentes, mas cria usuários e ofertas de demonstração. Use-o somente em banco local ou de testes.
 
 7. Inicie o servidor de desenvolvimento:
 
@@ -110,6 +120,8 @@ public/                    # Arquivos públicos da aplicação
 
 - Contrato OpenAPI do chatbot: `docs/chatbot-openapi.yaml`
 - Resumo da entrega da Pessoa 1: `docs/chatbot-handoff.md`
+- O app web autentica as rotas pela sessão. Chamadas servidor-a-servidor do Watson usam `Authorization: Bearer <CHATBOT_API_TOKEN>` e `X-ReUse-User-Id`.
+- O ID deve vir do contexto autenticado da aplicação; não permita que o usuário escolha esse valor por mensagem. Configure o token como segredo no Watson e no ambiente do servidor.
 
 ---
 
@@ -140,4 +152,3 @@ A segunda sprint tem como objetivo ampliar o projeto ReUse para a web, mantendo 
 - [Natali Schers](https://github.com/natali-schers)
 - [Sarah Maranhão](https://github.com/smaranha)
 - [Rebeca Soares](https://github.com/Rebeca-Soares)
-- [Stephanie Cruz](https://github.com/SteryMoon)

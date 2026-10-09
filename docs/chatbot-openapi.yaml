@@ -11,6 +11,17 @@ paths:
     post:
       summary: Lista as ofertas ativas do usuário logado
       operationId: listActiveOffers
+      security:
+        - sessionCookie: []
+        - chatbotBearer: []
+      parameters:
+        - name: X-ReUse-User-Id
+          in: header
+          required: false
+          description: Obrigatório com chatbotBearer. Deve vir do contexto autenticado do usuário, nunca de texto livre.
+          schema:
+            type: integer
+            minimum: 1
       requestBody:
         required: false
         content:
@@ -48,6 +59,17 @@ paths:
     post:
       summary: Pausa ofertas ativas do usuário logado
       operationId: pauseOffers
+      security:
+        - sessionCookie: []
+        - chatbotBearer: []
+      parameters:
+        - name: X-ReUse-User-Id
+          in: header
+          required: false
+          description: Obrigatório com chatbotBearer. Deve vir do contexto autenticado do usuário, nunca de texto livre.
+          schema:
+            type: integer
+            minimum: 1
       requestBody:
         required: true
         content:
@@ -64,6 +86,15 @@ paths:
                   items:
                     type: integer
                     minimum: 1
+              anyOf:
+                - properties:
+                    pauseAll:
+                      enum: [true]
+                  required: [pauseAll]
+                - properties:
+                    offerIds:
+                      minItems: 1
+                  required: [offerIds]
       responses:
         '200':
           description: Ofertas pausadas com sucesso
@@ -88,6 +119,15 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: reuse_user_id
+    chatbotBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: secret token
   schemas:
     Offer:
       type: object

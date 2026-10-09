@@ -2,7 +2,7 @@
 
 Este documento resume o que foi entregue no backend para a integracao do assistente virtual e o que a proxima pessoa precisa usar.
 
-## Entregue na Pessoa 1
+## Entregue 
 
 - Modelo de dados atualizado para suportar ofertas do usuario com status ACTIVE e PAUSED.
 - Seed com usuarios de teste e ofertas vinculadas a esses usuarios.
@@ -23,15 +23,17 @@ Este documento resume o que foi entregue no backend para a integracao do assiste
 
 ## Como a autenticacao funciona hoje
 
-- As rotas usam a sessao atual da aplicacao web.
-- O usuario autenticado eh lido pelo cookie reuse_user_id.
-- Isso significa que, do jeito atual, a chamada funciona melhor quando parte da propria aplicacao web.
+- Chamadas feitas pela aplicacao web usam o cookie assinado `reuse_user_id`, validado com `SESSION_SECRET`.
+- Chamadas servidor-a-servidor do Watson usam `Authorization: Bearer <CHATBOT_API_TOKEN>` e `X-ReUse-User-Id`.
+- Configure valores distintos para `SESSION_SECRET` e `CHATBOT_API_TOKEN` no servidor; configure o segundo tambem nas credenciais do Watson. Nunca envie esses segredos ao navegador.
+- O `X-ReUse-User-Id` precisa ser preenchido a partir do contexto autenticado da aplicacao. Nao aceite esse ID diretamente de texto enviado pelo usuario.
+- Gere cada segredo com `openssl rand -hex 32` e mantenha os valores fora do repositorio. Configurar um novo `SESSION_SECRET` invalida sessoes antigas e exige novo login.
 
 ## Usuarios de teste do seed
 
 - usuario: sarah
 - usuario: rebeca
-- usuario: stephanie
+- usuario: natali
 - senha para todos: reuse123
 
 ## Payloads esperados
@@ -70,13 +72,15 @@ Opcao 2:
 
 ## O que a proxima pessoa precisa fazer
 
-- Subir o banco com DATABASE_URL configurada.
-- Rodar npx prisma migrate dev.
-- Rodar npx prisma db seed.
-- Publicar a aplicacao ou usar uma URL acessivel para o IBM Watson.
-- Importar docs/chatbot-openapi.yaml no Watson.
-- Configurar as actions para consumir essas duas rotas.
+- Para conectar o IBM Watson, publicar a aplicacao e substituir a URL de exemplo em `docs/chatbot-openapi.yaml` pelo dominio publico.
+- Configurar `SESSION_SECRET` no servidor e `CHATBOT_API_TOKEN` no servidor e nas credenciais do Watson.
+- Importar `docs/chatbot-openapi.yaml` no Watson e configurar as actions para enviar o Bearer token e `X-ReUse-User-Id` confiavel.
+- O ID deve vir do contexto autenticado da aplicacao; nao configure um ID fixo nem aceite o valor de texto livre do usuario.
 
-## Pendencia conhecida
+## Validacao da Pessoa 1
 
-- Ainda nao foi possivel validar migrate e seed em banco real neste ambiente porque DATABASE_URL nao estava disponivel para o Prisma CLI.
+- PostgreSQL 18 local instalado via Postgres.app; banco isolado `reuse_p1_test`.
+- Migracao `20261008000100_init_chatbot_offers` aplicada e confirmada pelo Prisma.
+- Seed configurado para 3 usuarios demo, 8 categorias e 34 ofertas. O seed preserva dados existentes.
+- Testes HTTP passaram para autenticacao valida/invalida, usuario sem autenticacao, isolamento entre donos, payload invalido, pausa seletiva e pausa total.
+- Os testes foram feitos localmente. A URL publica e os segredos de deploy ainda precisam ser configurados antes da integracao com o Watson.

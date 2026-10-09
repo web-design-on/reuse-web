@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getCurrentUserId } from "@/lib/auth";
 
@@ -13,7 +14,30 @@ export function errorJson(status: number, code: ErrorCode, message: string) {
     return NextResponse.json<ErrorBody>({ success: false, code, message }, { status });
 }
 
-export async function requireUserId() {
+function hasValidChatbotToken(token: string) {
+    const expectedToken = process.env.CHATBOT_API_TOKEN;
+    if (!expectedToken) return false;
+
+    const received = Buffer.from(token);
+    const expected = Buffer.from(expectedToken);
+    return received.length === expected.length && timingSafeEqual(received, expected);
+}
+
+export async function requireUserId(request: Request) {
+    const authorization = request.headers.get("authorization");
+
+    if (authorization !== null) {
+        const match = /^Bearer\s+(.+)$/i.exec(authorization);
+        if (!match || !hasValidChatbotToken(match[1].trim())) return null;
+
+        const userId = request.headers.get("x-reuse-user-id");
+        if (!userId || !/^[1-9]\d*$/.test(userId)) return null;
+
+        const parsedUserId = Number(userId);
+        if (!Number.isSafeInteger(parsedUserId)) return null;
+        return parsedUserId;
+    }
+
     try {
         return await getCurrentUserId();
     } catch {

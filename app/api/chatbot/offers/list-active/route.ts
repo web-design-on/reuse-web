@@ -16,7 +16,7 @@ type SuccessBody = {
 };
 
 export async function POST(request: Request) {
-    const userId = await requireUserId();
+    const userId = await requireUserId(request);
     if (!userId) {
         return errorJson(401, "UNAUTHORIZED", "Faça login para continuar.");
     }

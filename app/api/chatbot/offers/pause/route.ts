@@ -9,7 +9,7 @@ type SuccessBody = {
 };
 
 export async function POST(request: Request) {
-    const userId = await requireUserId();
+    const userId = await requireUserId(request);
     if (!userId) {
         return errorJson(401, "UNAUTHORIZED", "Faça login para continuar.");
     }
@@ -19,8 +19,14 @@ export async function POST(request: Request) {
         return errorJson(400, "BAD_REQUEST", "Payload JSON inválido.");
     }
 
-    const pauseAll = Boolean((body as { pauseAll?: unknown }).pauseAll);
+    const rawPauseAll = (body as { pauseAll?: unknown }).pauseAll;
     const rawOfferIds = (body as { offerIds?: unknown }).offerIds;
+
+    if (rawPauseAll !== undefined && typeof rawPauseAll !== "boolean") {
+        return errorJson(400, "BAD_REQUEST", "pauseAll deve ser um valor booleano.");
+    }
+
+    const pauseAll = rawPauseAll === true;
 
     let targetOfferIds: number[] = [];
 

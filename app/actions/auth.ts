@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
 import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
+import { createUserSessionValue } from "@/lib/session-token";
 
 const USER_COOKIE = "reuse_user_id";
 
@@ -11,7 +12,7 @@ type SafeUser = { id: number; firstName: string; userName: string; image?: strin
 export type AuthResult = { success: true; user: SafeUser } | { success: false; message: string };
 
 async function setSessionCookie(userId: number) {
-  (await cookies()).set(USER_COOKIE, String(userId), {
+  (await cookies()).set(USER_COOKIE, createUserSessionValue(userId), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
