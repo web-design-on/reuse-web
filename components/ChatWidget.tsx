@@ -36,8 +36,9 @@ export default function ChatWidget() {
           crn: "crn:v1:bluemix:public:watsonx-orchestrate:ca-tor:a/0bcc146e9a8242929b5a88eb806767b4:34fb50e9-f88c-45a4-88d9-19b6fa7d3863::",
           defaultLocale: "pt-BR",
           chatOptions: {
-            agentId: "7e96aff9-0b87-49e3-b052-4925f926a4ac",
-            onLoad: onChatLoad
+              agentId: "7e96aff9-0b87-49e3-b052-4925f926a4ac", 
+              agentEnvironmentId: "afcc57b2-c30c-4216-aa69-1839165cd861",
+              onLoad: onChatLoad
           }
         };
 
