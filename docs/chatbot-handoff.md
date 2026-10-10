@@ -75,7 +75,8 @@ Opcao 2:
 - Para conectar o IBM Watson, publicar a aplicacao e substituir a URL de exemplo em `docs/chatbot-openapi.yaml` pelo dominio publico.
 - Configurar `SESSION_SECRET` no servidor e `CHATBOT_API_TOKEN` no servidor e nas credenciais do Watson.
 - Importar `docs/chatbot-openapi.yaml` no Watson e configurar as actions para enviar o Bearer token e `X-ReUse-User-Id` confiavel.
-- O ID deve vir do contexto autenticado da aplicacao; nao configure um ID fixo nem aceite o valor de texto livre do usuario.
+- Configure `X-ReUse-User-Id` com `context.user_id`, fornecido pelo JWT autenticado do widget. As chamadas servidor-a-servidor do Watson nao recebem o cookie do navegador.
+- Nao configure um ID fixo nem aceite o valor de texto livre do usuario.
 
 ## Validacao da Pessoa 1
 

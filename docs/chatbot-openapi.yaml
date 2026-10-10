@@ -17,8 +17,8 @@ paths:
       parameters:
         - name: X-ReUse-User-Id
           in: header
-          required: false
-          description: Obrigatório com chatbotBearer. Deve vir do contexto autenticado do usuário, nunca de texto livre.
+          required: true
+          description: Preencha com context.user_id do JWT autenticado do widget, nunca com texto livre do usuário.
           schema:
             type: integer
             minimum: 1
@@ -65,8 +65,8 @@ paths:
       parameters:
         - name: X-ReUse-User-Id
           in: header
-          required: false
-          description: Obrigatório com chatbotBearer. Deve vir do contexto autenticado do usuário, nunca de texto livre.
+          required: true
+          description: Preencha com context.user_id do JWT autenticado do widget, nunca com texto livre do usuário.
           schema:
             type: integer
             minimum: 1

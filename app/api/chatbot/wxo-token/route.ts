@@ -51,7 +51,7 @@ export async function GET() {
     {
       sub: String(user.id),
       user_payload: encryptedPayload,
-      context: { name: user.firstName },
+      context: { name: user.firstName, user_id: String(user.id) },
     },
     privateKey,
     { algorithm: "RS256", expiresIn: "1h" }
