@@ -27,7 +27,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <Providers>
           <Navbar isLoggedIn={isLoggedIn} />
           {children}
-          <ChatWidget />
+          {isLoggedIn && <ChatWidget />}
           <Footer />
         </Providers>
       </body>
