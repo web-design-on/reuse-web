@@ -76,6 +76,8 @@ Opcao 2:
 - Configurar `SESSION_SECRET` no servidor e `CHATBOT_API_TOKEN` no servidor e nas credenciais do Watson.
 - Importar `docs/chatbot-openapi.yaml` no Watson e configurar as actions para enviar o Bearer token e `X-ReUse-User-Id` confiavel.
 - Configure `X-ReUse-User-Id` com `context.user_id`, fornecido pelo JWT autenticado do widget. As chamadas servidor-a-servidor do Watson nao recebem o cookie do navegador.
+- Na definicao do agente, habilite `context_access_enabled: true`, declare `user_id` em `context_variables` e instrua o agente a usar `{user_id}` sem solicitar esse dado ao usuario. Reimporte o agente depois da alteracao.
+- No mapeamento da action, envie o valor autenticado `user_id` no cabecalho `X-ReUse-User-Id`; nao use texto da conversa.
 - Nao configure um ID fixo nem aceite o valor de texto livre do usuario.
 
 ## Validacao da Pessoa 1
