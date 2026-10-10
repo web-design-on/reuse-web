@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { FaBars, FaComments, FaHeart, FaHome, FaShoppingCart, FaSignOutAlt, FaThLarge, FaTimes } from "react-icons/fa";
 import { useAuth } from "@/contexts/AuthContext";
+import { signOutUser } from "@/app/actions/auth";
 
 const loggedInLinks = [
   { href: "/", label: "Início", icon: FaHome },
@@ -22,16 +23,16 @@ const loggedOutLinks = [
 
 export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
   const pathname = usePathname();
-  const router = useRouter();
   const { user, loading, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const loggedIn = loading ? isLoggedIn : Boolean(user);
   const navigationLinks = loggedIn ? loggedInLinks : loggedOutLinks;
 
   async function handleSignOut() {
+    await signOutUser();
     await signOut();
     setMenuOpen(false);
-    router.push("/login");
+    window.location.href = "/login";
   }
 
   function closeMenu() {
