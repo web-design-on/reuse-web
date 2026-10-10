@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import Navbar from "./navbar";
 import Providers from "./providers";
 import Footer from "@/components/Footer";
+import { verifyUserSessionValue } from "@/lib/session-token";
 import "./globals.css";
 import ChatWidget from "@/components/ChatWidget";
 
@@ -19,7 +20,8 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const isLoggedIn = Boolean((await cookies()).get("reuse_user_id")?.value);
+  const sessionValue = (await cookies()).get("reuse_user_id")?.value;
+  const isLoggedIn = verifyUserSessionValue(sessionValue) !== null;
 
   return (
     <html lang="pt-BR" className={poppins.variable}>
@@ -27,7 +29,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <Providers>
           <Navbar isLoggedIn={isLoggedIn} />
           {children}
-          <ChatWidget />
+          {isLoggedIn && <ChatWidget />}
           <Footer />
         </Providers>
       </body>

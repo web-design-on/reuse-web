@@ -10,8 +10,16 @@ export default function ChatWidget() {
           await instance.updateLocale("pt-BR");
 
           instance.on("authTokenNeeded", async function (event) {
-            const res = await fetch("./api/chatbot/wxo-token");
+            const res = await fetch("/api/chatbot/wxo-token", { credentials: "same-origin" });
+            if (!res.ok) {
+              throw new Error("Não foi possível obter o token do assistente.");
+            }
+
             const data = await res.json();
+            if (typeof data.token !== "string" || !data.token) {
+              throw new Error("A resposta do token do assistente é inválida.");
+            }
+
             event.authToken = data.token;
           });
         }
