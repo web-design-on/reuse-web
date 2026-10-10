@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: API para automação de tarefas da plataforma ReUse via assistente virtual.
 servers:
-  - url: https://seu-dominio.vercel.app
+  - url: https://reuse-web-design-on.vercel.app
     description: Produção
 paths:
   /api/chatbot/offers/list-active:
