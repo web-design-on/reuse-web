@@ -5,6 +5,7 @@ import Navbar from "./navbar";
 import Providers from "./providers";
 import Footer from "@/components/Footer";
 import "./globals.css";
+import ChatWidget from "@/components/ChatWidget";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -26,6 +27,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <Providers>
           <Navbar isLoggedIn={isLoggedIn} />
           {children}
+          <ChatWidget />
           <Footer />
         </Providers>
       </body>
