@@ -6,7 +6,9 @@ export default function ChatWidget() {
   return (
     <Script id="wxo-chat" strategy="afterInteractive">
       {`
-        function onChatLoad(instance) {
+        async function onChatLoad(instance) {
+          await instance.updateLocale("pt-BR");
+
           instance.on("authTokenNeeded", async function (event) {
             const res = await fetch("./api/chatbot/wxo-token");
             const data = await res.json();
@@ -20,6 +22,7 @@ export default function ChatWidget() {
           rootElementID: "chat-root",
           deploymentPlatform: "ibmcloud",
           crn: "crn:v1:bluemix:public:watsonx-orchestrate:ca-tor:a/0bcc146e9a8242929b5a88eb806767b4:34fb50e9-f88c-45a4-88d9-19b6fa7d3863::",
+          defaultLocale: "pt-BR",
           chatOptions: {
             agentId: "7e96aff9-0b87-49e3-b052-4925f926a4ac",
             onLoad: onChatLoad
