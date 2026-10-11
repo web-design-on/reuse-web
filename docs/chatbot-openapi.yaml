@@ -12,16 +12,14 @@ paths:
       summary: Lista as ofertas ativas do usuário logado
       operationId: listActiveOffers
       security:
-        - sessionCookie: []
-        - chatbotBearer: []
+        - extensionKey: []
       parameters:
-        - name: X-ReUse-User-Id
+        - name: X-ReUse-Action-Token
           in: header
           required: true
-          description: Preencha com context.user_id do JWT autenticado do widget, nunca com texto livre do usuário.
+          description: Token de sessão do payload privado do Web Chat; não use ID da conversa.
           schema:
-            type: integer
-            minimum: 1
+            type: string
       requestBody:
         required: false
         content:
@@ -60,16 +58,14 @@ paths:
       summary: Pausa ofertas ativas do usuário logado
       operationId: pauseOffers
       security:
-        - sessionCookie: []
-        - chatbotBearer: []
+        - extensionKey: []
       parameters:
-        - name: X-ReUse-User-Id
+        - name: X-ReUse-Action-Token
           in: header
           required: true
-          description: Preencha com context.user_id do JWT autenticado do widget, nunca com texto livre do usuário.
+          description: Token de sessão do payload privado do Web Chat; não use ID da conversa.
           schema:
-            type: integer
-            minimum: 1
+            type: string
       requestBody:
         required: true
         content:
@@ -120,14 +116,11 @@ paths:
           $ref: '#/components/responses/BadRequest'
 components:
   securitySchemes:
-    sessionCookie:
+    extensionKey:
       type: apiKey
-      in: cookie
-      name: reuse_user_id
-    chatbotBearer:
-      type: http
-      scheme: bearer
-      bearerFormat: secret token
+      in: header
+      name: X-ReUse-Extension-Key
+      description: Chave privada da extensão, igual a ASSISTANT_EXTENSION_API_KEY na Vercel.
   schemas:
     Offer:
       type: object

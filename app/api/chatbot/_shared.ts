@@ -1,4 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { getCurrentUserId } from "@/lib/auth";
 
@@ -14,8 +15,8 @@ export function errorJson(status: number, code: ErrorCode, message: string) {
     return NextResponse.json<ErrorBody>({ success: false, code, message }, { status });
 }
 
-function hasValidChatbotToken(token: string) {
-    const expectedToken = process.env.CHATBOT_API_TOKEN;
+function hasValidExtensionKey(token: string) {
+    const expectedToken = process.env.ASSISTANT_EXTENSION_API_KEY ?? process.env.CHATBOT_API_TOKEN;
     if (!expectedToken) return false;
 
     const received = Buffer.from(token);
@@ -23,19 +24,30 @@ function hasValidChatbotToken(token: string) {
     return received.length === expected.length && timingSafeEqual(received, expected);
 }
 
+function getUserIdFromActionToken(token: string) {
+    const secret = process.env.ASSISTANT_ACTION_SECRET;
+    if (!secret) return null;
+
+    try {
+        const payload = jwt.verify(token, secret, { algorithms: ["HS256"] }) as JwtPayload;
+        if (payload.purpose !== "reuse-action" || typeof payload.sub !== "string" || !/^[1-9]\d*$/.test(payload.sub)) {
+            return null;
+        }
+
+        const userId = Number(payload.sub);
+        return Number.isSafeInteger(userId) ? userId : null;
+    } catch {
+        return null;
+    }
+}
+
 export async function requireUserId(request: Request) {
-    const authorization = request.headers.get("authorization");
+    const extensionKey = request.headers.get("x-reuse-extension-key");
+    const actionToken = request.headers.get("x-reuse-action-token");
 
-    if (authorization !== null) {
-        const match = /^Bearer\s+(.+)$/i.exec(authorization);
-        if (!match || !hasValidChatbotToken(match[1].trim())) return null;
-
-        const userId = request.headers.get("x-reuse-user-id");
-        if (!userId || !/^[1-9]\d*$/.test(userId)) return null;
-
-        const parsedUserId = Number(userId);
-        if (!Number.isSafeInteger(parsedUserId)) return null;
-        return parsedUserId;
+    if (extensionKey !== null || actionToken !== null) {
+        if (!extensionKey || !actionToken || !hasValidExtensionKey(extensionKey)) return null;
+        return getUserIdFromActionToken(actionToken);
     }
 
     try {

@@ -80,13 +80,13 @@ public/                    # Arquivos públicos da aplicação
    cp .env.example .env
    ```
 
-   Gere segredos distintos para `SESSION_SECRET` e `CHATBOT_API_TOKEN`. O primeiro assina as sessões web; o segundo autentica chamadas servidor-a-servidor e também deve ser salvo no cofre de credenciais do Watson. Nunca exponha nenhum deles no frontend:
+   Configure `SESSION_SECRET`, `ASSISTANT_ACTION_SECRET` e `ASSISTANT_EXTENSION_API_KEY` com valores distintos. Os dois últimos são usados para assinar o token de ação curto e autenticar a extensão. Configure as chaves base64 do Web Chat e os IDs públicos `NEXT_PUBLIC_IBM_ASSISTANT_INTEGRATION_ID`, `NEXT_PUBLIC_IBM_ASSISTANT_REGION`, `NEXT_PUBLIC_IBM_ASSISTANT_SERVICE_INSTANCE_ID` e `NEXT_PUBLIC_IBM_ASSISTANT_WEB_CHAT_VERSION`, conforme `Guia-watsonx-Orchestrate-ReUse.pdf`. Só os IDs e a versão usam o prefixo público; nunca exponha chaves ou tokens:
 
    ```bash
    openssl rand -hex 32
    ```
 
-   Execute o comando uma vez para cada variável. Após configurar `SESSION_SECRET`, todos os usuários precisarão entrar novamente.
+   Execute o comando uma vez para cada segredo. Após configurar `SESSION_SECRET`, todos os usuários precisarão entrar novamente.
 
 5. Crie as tabelas do banco:
 
@@ -116,12 +116,11 @@ public/                    # Arquivos públicos da aplicação
 
 8. Acesse `http://localhost:3000` no navegador.
 
-## Chatbot e Handoff
+## Chatbot
 
 - Contrato OpenAPI do chatbot: `docs/chatbot-openapi.yaml`
-- Resumo da entrega da Pessoa 1: `docs/chatbot-handoff.md`
-- O app web autentica as rotas pela sessão. Chamadas servidor-a-servidor do Watson usam `Authorization: Bearer <CHATBOT_API_TOKEN>` e `X-ReUse-User-Id`.
-- O ID deve vir do contexto autenticado da aplicação; não permita que o usuário escolha esse valor por mensagem. Configure o token como segredo no Watson e no ambiente do servidor.
+- O app web autentica `POST /api/assistant/session` pela sessão e entrega ao Web Chat do AI Assistant Builder um JWT de identidade com payload privado. A extensão usa `X-ReUse-Extension-Key` e `X-ReUse-Action-Token` para as chamadas às APIs.
+- A API deriva o ID do usuário do token de ação assinado, sem depender de `context.user_id` ou de texto da conversa. Consulte `Guia-watsonx-Orchestrate-ReUse.pdf` para configurar os segredos e o mapeamento das actions.
 
 ---
 
