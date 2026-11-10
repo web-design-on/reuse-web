@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { errorJson, normalizeLimit, requireUserId } from "../../_shared";
+import { errorJson, normalizeLimit, readJsonBody, requireUserId } from "../../_shared";
 
 type OfferItem = {
     id: number;
@@ -21,16 +21,12 @@ export async function POST(request: Request) {
         return errorJson(401, "UNAUTHORIZED", "Faça login para continuar.");
     }
 
-    let body: { limit?: unknown };
-    try {
-        const text = await request.text();
-        body = text.trim() ? JSON.parse(text) : {};
-        if (!body || typeof body !== "object" || Array.isArray(body)) throw new Error();
-    } catch {
+    const body = await readJsonBody(request);
+    if (body === null) {
         return errorJson(400, "BAD_REQUEST", "Payload JSON inválido.");
     }
 
-    const limit = normalizeLimit(body.limit);
+    const limit = normalizeLimit((body as { limit?: unknown }).limit);
 
     const offers = await db.product.findMany({
         where: {

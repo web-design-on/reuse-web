@@ -82,6 +82,15 @@ paths:
                   items:
                     type: integer
                     minimum: 1
+              anyOf:
+                - properties:
+                    pauseAll:
+                      enum: [true]
+                  required: [pauseAll]
+                - properties:
+                    offerIds:
+                      minItems: 1
+                  required: [offerIds]
       responses:
         '200':
           description: Ofertas pausadas com sucesso

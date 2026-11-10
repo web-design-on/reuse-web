@@ -17,39 +17,27 @@ export default function ChatWidget() {
               throw new Error("Configure os IDs do Web Chat IBM nas variáveis NEXT_PUBLIC_IBM_ASSISTANT_*.");
             }
 
-            async function getIdentityToken() {
-              const res = await fetch("/api/assistant/session", {
-                method: "POST",
-                credentials: "same-origin",
-                cache: "no-store"
-              });
-              if (!res.ok) {
-                throw new Error("Não foi possível obter a identidade autenticada do chat.");
-              }
-
-              const data = await res.json();
-              if (typeof data.identityToken !== "string" || !data.identityToken) {
-                throw new Error("A resposta da identidade do chat é inválida.");
-              }
-              return data.identityToken;
+            const res = await fetch("/api/assistant/session", {
+              method: "POST",
+              credentials: "same-origin",
+              cache: "no-store"
+            });
+            if (!res.ok) {
+              throw new Error("Não foi possível obter a identidade autenticada do chat.");
             }
 
-            const identityToken = await getIdentityToken();
+            const data = await res.json();
+            if (typeof data.identityToken !== "string" || !data.identityToken) {
+              throw new Error("A resposta da identidade do chat é inválida.");
+            }
 
             window.watsonAssistantChatOptions = {
               integrationID,
               region,
               serviceInstanceID,
               clientVersion,
-              identityToken,
+              identityToken: data.identityToken,
               onLoad: async function (instance) {
-                window.reuseAssistantChat = instance;
-                instance.on({
-                  type: "identityTokenExpired",
-                  handler: async function (event) {
-                    event.identityToken = await getIdentityToken();
-                  }
-                });
                 await instance.updateLocale("pt-BR");
                 await instance.render();
               }

@@ -8,12 +8,6 @@ import { FaBars, FaComments, FaHeart, FaHome, FaShoppingCart, FaSignOutAlt, FaTh
 import { useAuth } from "@/contexts/AuthContext";
 import { signOutUser } from "@/app/actions/auth";
 
-declare global {
-  interface Window {
-    reuseAssistantChat?: { destroySession: () => Promise<void> };
-  }
-}
-
 const loggedInLinks = [
   { href: "/", label: "Início", icon: FaHome },
   { href: "/categories", label: "Produtos", icon: FaThLarge },
@@ -35,11 +29,6 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
   const navigationLinks = loggedIn ? loggedInLinks : loggedOutLinks;
 
   async function handleSignOut() {
-    try {
-      await window.reuseAssistantChat?.destroySession();
-    } catch (error) {
-      console.error("Não foi possível encerrar a sessão do assistente.", error);
-    }
     await signOutUser();
     await signOut();
     setMenuOpen(false);
