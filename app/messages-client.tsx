@@ -37,7 +37,7 @@ export default function MessagesClient({ contacts, userId }: { contacts: Message
   const selectedContact = contactList.find((contact) => contact.id === selectedContactId) ?? null;
   const selectedAvatar = avatars[contactList.findIndex((contact) => contact.id === selectedContactId) % avatars.length] ?? avatars[0];
   const normalizedSearch = normalizeSearch(searchTerm);
-  const filteredContacts = contactList.filter((contact) => normalizeSearch(contact.userName).includes(normalizedSearch));
+  const filteredContacts = contactList.filter((contact) => normalizeSearch(`${contact.firstName} ${contact.userName}`).includes(normalizedSearch));
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -99,17 +99,17 @@ export default function MessagesClient({ contacts, userId }: { contacts: Message
             {filteredContacts.map((contact) => (
               <button className={`conversation-item ${selectedContactId === contact.id ? "selected" : ""}`} type="button" key={contact.id} onClick={() => setSelectedContactId(contact.id)}>
                 <Image className="person-avatar" src={avatars[contactList.findIndex((item) => item.id === contact.id) % avatars.length]} alt="" width={44} height={44} />
-                <span><strong>{contact.userName}</strong></span>
+                <span><strong>{contact.firstName}</strong></span>
               </button>
             ))}
             {filteredContacts.length === 0 && <p className="search-empty">Nenhum outro usuário encontrado.</p>}
           </div>
         </aside>
 
-        <section className="conversation-card" aria-label={selectedContact ? `Conversa com ${selectedContact.userName}` : "Mensagens"}>
+        <section className="conversation-card" aria-label={selectedContact ? `Conversa com ${selectedContact.firstName}` : "Mensagens"}>
           <header className="conversation-header">
             {selectedContact && <Image className="person-avatar chat-avatar" src={selectedAvatar} alt="" width={48} height={48} />}
-            <div className="chat-title"><h1>{selectedContact?.userName ?? "Mensagens"}</h1></div>
+            <div className="chat-title"><h1>{selectedContact?.firstName ?? "Mensagens"}</h1></div>
           </header>
 
           <div className="message-list" aria-live="polite">

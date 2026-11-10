@@ -4,9 +4,9 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 const demoUsers = [
-  { firstName: 'Sarah', userName: 'sarah', password: 'reuse123' },
-  { firstName: 'Rebeca', userName: 'rebeca', password: 'reuse123' },
-  { firstName: 'Natali', userName: 'natali', password: 'reuse123' },
+  { firstName: 'Sarah Oliveira', userName: 'sarah', password: 'reuse123' },
+  { firstName: 'Rebeca Martins', userName: 'rebeca', password: 'reuse123' },
+  { firstName: 'Natalia Costa', userName: 'natali', password: 'reuse123' },
 ];
 
 const categories = [
@@ -649,7 +649,7 @@ async function main() {
   const createdUsers = await Promise.all(
     demoUsers.map((user) => prisma.user.upsert({
       where: { userName: user.userName },
-      update: {},
+      update: { firstName: user.firstName },
       create: {
         firstName: user.firstName,
         userName: user.userName,
