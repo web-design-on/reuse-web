@@ -74,11 +74,7 @@ public/                    # Arquivos públicos da aplicação
    npm install
    ```
 
-4. Configure o banco de dados. Copie o arquivo `.env.example` para `.env` e informe a URL do PostgreSQL:
-
-   ```bash
-   cp .env.example .env
-   ```
+4. Configure o banco de dados. Crie um arquivo `.env` local e informe `DATABASE_URL` com a URL do PostgreSQL.
 
    Configure `SESSION_SECRET`, `ASSISTANT_ACTION_SECRET` e `ASSISTANT_EXTENSION_API_KEY` com valores distintos. Os dois últimos são usados para assinar o token de ação curto e autenticar a extensão. Configure as chaves base64 do Web Chat e os IDs públicos `NEXT_PUBLIC_IBM_ASSISTANT_INTEGRATION_ID`, `NEXT_PUBLIC_IBM_ASSISTANT_REGION`, `NEXT_PUBLIC_IBM_ASSISTANT_SERVICE_INSTANCE_ID` e `NEXT_PUBLIC_IBM_ASSISTANT_WEB_CHAT_VERSION`, conforme `Guia-watsonx-Orchestrate-ReUse.pdf`. Só os IDs e a versão usam o prefixo público; nunca exponha chaves ou tokens:
 
@@ -119,8 +115,9 @@ public/                    # Arquivos públicos da aplicação
 ## Chatbot
 
 - Contrato OpenAPI do chatbot: `docs/chatbot-openapi.yaml`
+- Passo a passo para configurar o assistente, a extensão, as Actions e o Web Chat: [docs/assistente-ibm.md](docs/assistente-ibm.md).
 - O app web autentica `POST /api/assistant/session` pela sessão e entrega ao Web Chat do AI Assistant Builder um JWT de identidade com payload privado. A extensão usa `X-ReUse-Extension-Key` e `X-ReUse-Action-Token` para as chamadas às APIs.
-- A API deriva o ID do usuário do token de ação assinado, sem depender de `context.user_id` ou de texto da conversa. Consulte `Guia-watsonx-Orchestrate-ReUse.pdf` para configurar os segredos e o mapeamento das actions.
+- A API deriva o ID do usuário do token de ação assinado, sem depender de `context.user_id` ou de texto da conversa. O chat atual requer login e não implementa entrada ou saída por voz.
 
 ---
 
