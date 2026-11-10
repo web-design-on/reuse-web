@@ -4,69 +4,68 @@ import { ChangeEvent, FormEvent, useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import { FaSearch } from "react-icons/fa";
 import { FaFileUpload } from "react-icons/fa";
-import { sendMessage, type ConversationView, type MessageView } from "./actions/messages";
+import { sendMessage, type MessageContactView, type MessageView } from "./actions/messages";
 
 function formatTime(value: string) {
   return new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
 }
 
-const sellers = [
-  { name: "vendedor_joão", avatar: "/avatars/vendedor_joao.png" },
-  { name: "vendedor_7329", avatar: "/avatars/vendedor_7329.png" },
-  { name: "vendedor_anônimo", avatar: "/avatars/vendedor_anônimo.png" },
-  { name: "vendedor_maria", avatar: "/avatars/vendedor_maria.png" },
-  { name: "vendedor_1048", avatar: "/avatars/vendedor_1048.png" },
+const avatars = [
+  "/avatars/vendedor_joao.png",
+  "/avatars/vendedor_7329.png",
+  "/avatars/vendedor_anônimo.png",
+  "/avatars/vendedor_maria.png",
+  "/avatars/vendedor_1048.png",
 ];
 
 function normalizeSearch(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 }
 
-export default function MessagesClient({ conversation, userId, demo = false }: { conversation: ConversationView; userId: number; demo?: boolean }) {
-  const [messageHistory, setMessageHistory] = useState<Record<string, MessageView[]>>({
-    vendedor_joão: conversation.messages,
-    vendedor_7329: [],
-    vendedor_anônimo: [],
-    vendedor_maria: [],
-    vendedor_1048: [],
-  });
+export default function MessagesClient({ contacts, userId }: { contacts: MessageContactView[]; userId: number }) {
+  const [contactList, setContactList] = useState(contacts);
+  const [messageHistory, setMessageHistory] = useState<Record<number, MessageView[]>>(
+    Object.fromEntries(contacts.map((contact) => [contact.id, contact.messages])),
+  );
   const [text, setText] = useState("");
   const [imageData, setImageData] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
-  const [selectedSeller, setSelectedSeller] = useState("vendedor_joão");
+  const [selectedContactId, setSelectedContactId] = useState<number | null>(contacts[0]?.id ?? null);
   const [searchTerm, setSearchTerm] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
-  const selectedAvatar = sellers.find((seller) => seller.name === selectedSeller)?.avatar ?? sellers[0].avatar;
+  const selectedContact = contactList.find((contact) => contact.id === selectedContactId) ?? null;
+  const selectedAvatar = avatars[contactList.findIndex((contact) => contact.id === selectedContactId) % avatars.length] ?? avatars[0];
   const normalizedSearch = normalizeSearch(searchTerm);
-  const filteredSellers = sellers.filter((seller) => normalizeSearch(seller.name).includes(normalizedSearch));
+  const filteredContacts = contactList.filter((contact) => normalizeSearch(contact.userName).includes(normalizedSearch));
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if ((!text.trim() && !imageData) || isPending) return;
+    if ((!text.trim() && !imageData) || isPending || !selectedContact) return;
 
     const pendingText = text;
     const pendingImage = imageData;
+    const pendingContact = selectedContact;
     setText("");
     setImageData(null);
     setError("");
 
     startTransition(async () => {
       try {
-        const message: MessageView = demo
-          ? {
-              id: `demo-${Date.now()}`,
-              text: pendingText,
-              imageUrl: pendingImage,
-              senderId: userId,
-              createdAt: new Date().toISOString(),
-            }
-          : await sendMessage({ conversationId: conversation.id, text: pendingText, imageUrl: pendingImage });
+        const result = await sendMessage({
+          conversationId: pendingContact.conversationId,
+          recipientId: pendingContact.id,
+          text: pendingText,
+          imageUrl: pendingImage,
+        });
 
         setMessageHistory((current) => ({
           ...current,
-          [selectedSeller]: [...(current[selectedSeller] ?? []), message],
+          [pendingContact.id]: [...(current[pendingContact.id] ?? []), result.message],
         }));
+        setContactList((current) => current.map((contact) => contact.id === pendingContact.id
+          ? { ...contact, conversationId: result.conversationId }
+          : contact));
       } catch {
         setText(pendingText);
         setImageData(pendingImage);
@@ -87,35 +86,35 @@ export default function MessagesClient({ conversation, userId, demo = false }: {
     reader.readAsDataURL(file);
   }
 
-  const messages = messageHistory[selectedSeller] ?? [];
+  const messages = selectedContactId === null ? [] : messageHistory[selectedContactId] ?? [];
 
   return (
     <main className="messages-shell">
       <section className="messages-layout" aria-label="Mensagens ReUse">
         <aside className="inbox-sidebar">
-          <header className="inbox-header"><strong>meu_usuario</strong></header>
+          <header className="inbox-header"><strong>Mensagens</strong></header>
           <label className="search-box"><FaSearch aria-hidden="true" /><input value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Pesquisar" aria-label="Pesquisar conversas" /></label>
           <div className="inbox-tabs"><strong>Mensagens</strong></div>
           <div className="conversation-list">
-            {filteredSellers.map((seller) => (
-              <button className={`conversation-item ${selectedSeller === seller.name ? "selected" : ""}`} type="button" key={seller.name} onClick={() => setSelectedSeller(seller.name)}>
-                <Image className="person-avatar" src={seller.avatar} alt="" width={44} height={44} />
-                <span><strong>{seller.name}</strong></span>
+            {filteredContacts.map((contact) => (
+              <button className={`conversation-item ${selectedContactId === contact.id ? "selected" : ""}`} type="button" key={contact.id} onClick={() => setSelectedContactId(contact.id)}>
+                <Image className="person-avatar" src={avatars[contactList.findIndex((item) => item.id === contact.id) % avatars.length]} alt="" width={44} height={44} />
+                <span><strong>{contact.userName}</strong></span>
               </button>
             ))}
-            {filteredSellers.length === 0 && <p className="search-empty">Nenhuma conversa encontrada.</p>}
+            {filteredContacts.length === 0 && <p className="search-empty">Nenhum outro usuário encontrado.</p>}
           </div>
         </aside>
 
-        <section className="conversation-card" aria-label={`Conversa com ${selectedSeller}`}>
+        <section className="conversation-card" aria-label={selectedContact ? `Conversa com ${selectedContact.userName}` : "Mensagens"}>
           <header className="conversation-header">
-            <Image className="person-avatar chat-avatar" src={selectedAvatar} alt="" width={48} height={48} />
-            <div className="chat-title"><h1>{selectedSeller}</h1></div>
+            {selectedContact && <Image className="person-avatar chat-avatar" src={selectedAvatar} alt="" width={48} height={48} />}
+            <div className="chat-title"><h1>{selectedContact?.userName ?? "Mensagens"}</h1></div>
           </header>
 
           <div className="message-list" aria-live="polite">
             {messages.length === 0 ? (
-              <div className="empty-chat"><span>✦</span><p>Comece a conversa sobre este item.</p></div>
+              <div className="empty-chat"><span>✦</span><p>{selectedContact ? "Comece a conversa." : "Não há outros usuários cadastrados."}</p></div>
             ) : messages.map((message) => {
               const own = message.senderId === userId;
               return (
@@ -134,9 +133,9 @@ export default function MessagesClient({ conversation, userId, demo = false }: {
           <form className="composer" onSubmit={handleSubmit}>
             <label className="sr-only" htmlFor="message">Digite uma mensagem</label>
             <input ref={fileInput} className="sr-only" type="file" accept="image/*" onChange={handleImageChange} />
-            <button className="camera-button" type="button" onClick={() => fileInput.current?.click()} aria-label="Anexar arquivo"><FaFileUpload /></button>
-            <input id="message" value={text} onChange={(event) => setText(event.target.value)} placeholder="Digite uma mensagem..." maxLength={2000} disabled={isPending} />
-            <button className="send-button" type="submit" aria-label="Enviar mensagem" disabled={(!text.trim() && !imageData) || isPending}>➤</button>
+            <button className="camera-button" type="button" onClick={() => fileInput.current?.click()} aria-label="Anexar arquivo" disabled={!selectedContact || isPending}><FaFileUpload /></button>
+            <input id="message" value={text} onChange={(event) => setText(event.target.value)} placeholder="Digite uma mensagem..." maxLength={2000} disabled={!selectedContact || isPending} />
+            <button className="send-button" type="submit" aria-label="Enviar mensagem" disabled={(!text.trim() && !imageData) || !selectedContact || isPending}>➤</button>
           </form>
           {error && <p className="form-error">{error}</p>}
         </section>

@@ -19,6 +19,14 @@ export type ConversationView = {
   messages: MessageView[];
 };
 
+export type MessageContactView = {
+  id: number;
+  firstName: string;
+  userName: string;
+  conversationId: string | null;
+  messages: MessageView[];
+};
+
 function toView(message: {
   id: string;
   text: string;
@@ -51,29 +59,75 @@ export async function getConversation(conversationId?: string): Promise<Conversa
   };
 }
 
-export async function sendMessage(input: { conversationId: string; text: string; imageUrl?: string | null }) {
+export async function getMessageContacts(): Promise<MessageContactView[]> {
+  const userId = await getCurrentUserId();
+  const [users, conversations] = await Promise.all([
+    db.user.findMany({
+      where: { id: { not: userId } },
+      select: { id: true, firstName: true, userName: true },
+      orderBy: { firstName: "asc" },
+    }),
+    db.conversation.findMany({
+      where: { OR: [{ participantOneId: userId }, { participantTwoId: userId }] },
+      include: { messages: { orderBy: { createdAt: "asc" } } },
+      orderBy: { updatedAt: "desc" },
+    }),
+  ]);
+
+  const conversationsByContact = new Map<number, (typeof conversations)[number]>();
+  for (const conversation of conversations) {
+    const contactId = conversation.participantOneId === userId
+      ? conversation.participantTwoId
+      : conversation.participantOneId;
+    if (!conversationsByContact.has(contactId)) conversationsByContact.set(contactId, conversation);
+  }
+
+  return users.map((user) => {
+    const conversation = conversationsByContact.get(user.id);
+    return {
+      ...user,
+      conversationId: conversation?.id ?? null,
+      messages: conversation?.messages.map(toView) ?? [],
+    };
+  });
+}
+
+export async function sendMessage(input: { conversationId?: string | null; recipientId: number; text: string; imageUrl?: string | null }) {
   const userId = await getCurrentUserId();
   const text = input.text.trim();
 
   if ((!text && !input.imageUrl) || text.length > 2000) throw new Error("MESSAGE_INVALID");
+  if (!Number.isInteger(input.recipientId) || input.recipientId === userId) throw new Error("RECIPIENT_INVALID");
   if (input.imageUrl && (!input.imageUrl.startsWith("data:image/") || input.imageUrl.length > 3_000_000)) {
     throw new Error("IMAGE_INVALID");
   }
 
-  const conversation = await db.conversation.findFirst({
-    where: {
-      id: input.conversationId,
-      OR: [{ participantOneId: userId }, { participantTwoId: userId }],
-    },
+  const recipient = await db.user.findUnique({ where: { id: input.recipientId }, select: { id: true } });
+  if (!recipient) throw new Error("RECIPIENT_NOT_FOUND");
+
+  const participants = [
+    { participantOneId: userId, participantTwoId: recipient.id },
+    { participantOneId: recipient.id, participantTwoId: userId },
+  ];
+  const conversation = input.conversationId
+    ? await db.conversation.findFirst({
+        where: {
+          id: input.conversationId,
+          OR: participants,
+        },
+        select: { id: true },
+      })
+    : await db.conversation.findFirst({ where: { OR: participants }, select: { id: true } });
+
+  const activeConversation = conversation ?? await db.conversation.create({
+    data: { participantOneId: userId, participantTwoId: recipient.id },
     select: { id: true },
   });
 
-  if (!conversation) throw new Error("CONVERSATION_NOT_FOUND");
-
   const message = await db.message.create({
-    data: { conversationId: conversation.id, senderId: userId, text, imageUrl: input.imageUrl ?? null },
+    data: { conversationId: activeConversation.id, senderId: userId, text, imageUrl: input.imageUrl ?? null },
   });
 
-  revalidatePath("/");
-  return toView(message);
+  revalidatePath("/messages");
+  return { message: toView(message), conversationId: activeConversation.id };
 }
