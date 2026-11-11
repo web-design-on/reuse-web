@@ -4,9 +4,16 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 const demoUsers = [
+  { firstName: 'Gabriel Almeida', userName: 'gabriel', password: 'reuse123' },
   { firstName: 'Sarah Oliveira', userName: 'sarah', password: 'reuse123' },
   { firstName: 'Rebeca Martins', userName: 'rebeca', password: 'reuse123' },
-  { firstName: 'Natalia Costa', userName: 'natali', password: 'reuse123' },
+  { firstName: 'Breno Carvalho', userName: 'breno', password: 'reuse123' },
+  { firstName: 'Rafael Santos', userName: 'rafael', password: 'reuse123' },
+  { firstName: 'Raissa Lima', userName: 'raissa', password: 'reuse123' },
+  { firstName: 'Ana Souza', userName: 'ana', password: 'reuse123' },
+  { firstName: 'Lucas Ferreira', userName: 'lucas', password: 'reuse123' },
+  { firstName: 'Mariana Costa', userName: 'mariana', password: 'reuse123' },
+  { firstName: 'Natali Duarte', userName: 'natali', password: 'reuse123' },
 ];
 
 const categories = [
