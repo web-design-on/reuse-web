@@ -18,8 +18,25 @@ const avatars = [
   "/avatars/vendedor_1048.png",
 ];
 
+const demoDisplayNames: Record<string, string> = {
+  gabriel: "Gabriel Almeida",
+  sarah: "Sarah Oliveira",
+  rebeca: "Rebeca Martins",
+  breno: "Breno Carvalho",
+  rafael: "Rafael Santos",
+  raissa: "Raissa Lima",
+  ana: "Ana Souza",
+  lucas: "Lucas Ferreira",
+  mariana: "Mariana Costa",
+  natali: "Natali Duarte",
+};
+
 function normalizeSearch(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+}
+
+function displayName(contact: MessageContactView) {
+  return demoDisplayNames[contact.userName] ?? contact.firstName;
 }
 
 export default function MessagesClient({ contacts, userId }: { contacts: MessageContactView[]; userId: number }) {
@@ -37,7 +54,7 @@ export default function MessagesClient({ contacts, userId }: { contacts: Message
   const selectedContact = contactList.find((contact) => contact.id === selectedContactId) ?? null;
   const selectedAvatar = avatars[contactList.findIndex((contact) => contact.id === selectedContactId) % avatars.length] ?? avatars[0];
   const normalizedSearch = normalizeSearch(searchTerm);
-  const filteredContacts = contactList.filter((contact) => normalizeSearch(`${contact.firstName} ${contact.userName}`).includes(normalizedSearch));
+  const filteredContacts = contactList.filter((contact) => normalizeSearch(`${displayName(contact)} ${contact.userName}`).includes(normalizedSearch));
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -99,17 +116,17 @@ export default function MessagesClient({ contacts, userId }: { contacts: Message
             {filteredContacts.map((contact) => (
               <button className={`conversation-item ${selectedContactId === contact.id ? "selected" : ""}`} type="button" key={contact.id} onClick={() => setSelectedContactId(contact.id)}>
                 <Image className="person-avatar" src={avatars[contactList.findIndex((item) => item.id === contact.id) % avatars.length]} alt="" width={44} height={44} />
-                <span><strong>{contact.firstName}</strong></span>
+                <span><strong>{displayName(contact)}</strong></span>
               </button>
             ))}
             {filteredContacts.length === 0 && <p className="search-empty">Nenhum outro usuário encontrado.</p>}
           </div>
         </aside>
 
-        <section className="conversation-card" aria-label={selectedContact ? `Conversa com ${selectedContact.firstName}` : "Mensagens"}>
+        <section className="conversation-card" aria-label={selectedContact ? `Conversa com ${displayName(selectedContact)}` : "Mensagens"}>
           <header className="conversation-header">
             {selectedContact && <Image className="person-avatar chat-avatar" src={selectedAvatar} alt="" width={48} height={48} />}
-            <div className="chat-title"><h1>{selectedContact?.firstName ?? "Mensagens"}</h1></div>
+            <div className="chat-title"><h1>{selectedContact ? displayName(selectedContact) : "Mensagens"}</h1></div>
           </header>
 
           <div className="message-list" aria-live="polite">
